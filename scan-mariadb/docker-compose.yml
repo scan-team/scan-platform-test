@@ -1,0 +1,37 @@
+version: '3.5'
+
+services:
+  # MySQL
+  db:
+    build: ./docker/db
+    container_name: mysql_host
+    env_file:
+      - .env
+    # command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./docker/db/data:/var/lib/mysql
+      - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./docker/db/init:/docker-entrypoint-initdb.d
+      - ./docker/db/scripts:/scripts
+    ports:
+      - 127.0.0.1:3306:3306
+    # - 3306:3306
+    networks:
+      - scan-network
+    user: '${USERID}:${GROUPID}'
+
+  # phpMyAdmin
+  phpmyadmin:
+    container_name: test_phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    env_file:
+      - .env
+    ports:
+      - 127.0.0.1:8080:80
+    networks:
+      - scan-network
+
+networks:
+  scan-network:
+    name: scan-network
+    driver: bridge

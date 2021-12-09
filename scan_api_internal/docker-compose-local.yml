@@ -1,0 +1,14 @@
+version: '3.5'
+services:
+  api:
+    build: .
+    image: jfujima/scan/api
+    container_name: scan_api
+    env_file: .env
+    ports:
+      - '${API_PORT}:8000'
+
+networks:
+  default:
+    external:
+      name: scan-network

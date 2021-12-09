@@ -1,0 +1,62 @@
+version: '3.5'
+
+services:
+  # MySQL
+  db:
+    build: ./scan-mariadb/docker/db
+    container_name: mysql_host
+    env_file:
+      - .env
+    volumes:
+      - ./scan-mariadb/docker/db/data:/var/lib/mysql
+      - ./scan-mariadb/docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./scan-mariadb/docker/db/init:/docker-entrypoint-initdb.d
+      - ./scan-mariadb/docker/db/scripts:/scripts
+    ports:
+      - 127.0.0.1:3306:3306
+    # - 3306:3306
+    networks:
+      - scan-network
+    user: '${USERID}:${GROUPID}'
+
+  # phpMyAdmin
+  phpmyadmin:
+    container_name: test_phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    env_file:
+      - .env
+    ports:
+      - 127.0.0.1:8080:80
+    networks:
+      - scan-network
+
+  api_internal:
+    build:
+      context: ./scan_api_internal
+      dockerfile: ./Dockerfile
+    image: jfujima/scan/api
+    container_name: scan_api_internal
+    env_file: .env
+    ports:
+      - '127.0.0.1:${API_PORT}:8000'
+    networks:
+      - scan-network
+
+  app:
+    build:
+      context: ./scan-app
+      dockerfile: ./Dockerfile
+      args:
+        - NEXT_PUBLIC_SCAN_API_PROXY_ROOT=${NEXT_PUBLIC_SCAN_API_PROXY_ROOT}
+    image: jfujima/scan/app
+    env_file: .env
+    container_name: scan_app
+    ports:
+      - '0.0.0.0:80:3000'
+    networks:
+      - scan-network
+
+networks:
+  scan-network:
+    name: scan-network
+    driver: bridge
