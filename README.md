@@ -1,11 +1,11 @@
 # SCAN Platform test
 
-This is a monorepo for SCAN Platform. It's consists of three main components:
+This is a monorepo for SCAN Platform. It consists of three main components:
 
 * scan-mariadb
   * Database
 * scan-api-internal
-  * backend-api for scan-app
+  * Backend-api for scan-app
 * scan-app
   * Web interface for SCAN Platform
 
@@ -15,9 +15,9 @@ This is a monorepo for SCAN Platform. It's consists of three main components:
 ### Preparation
 
 You need a docker installed environment and docker-compose.
-Additionally, the following thins are needed.
+Additionally, the following things are needed.
 
-1. You need to setup an [auth0](https://auth0.com/) tenant and a Single Page Application. Please refer to the [documentation](https://auth0.com/docs) provided by auth0 for the detail instruction.
+1. You need to set up an [auth0](https://auth0.com/) tenant and a Single Page Application. Please refer to the [documentation](https://auth0.com/docs) provided by auth0 for the detail instruction.
 
 2. Copy `.env.sample` to `.env` and edit it property. Especially, you need to specify the correct auth0 variables.
 
