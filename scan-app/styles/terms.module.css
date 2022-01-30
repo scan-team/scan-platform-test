@@ -1,0 +1,29 @@
+.content {
+  margin: auto;
+}
+
+.content h1,
+.content h2,
+.content h3,
+.content h4,
+.content h5,
+.content h6,
+.content hr {
+  margin: 10pt 0pt 2pt 0pt;
+}
+
+.content p,
+.content li,
+.content pre {
+  margin: 5pt 0pt 2pt 0pt;
+  text-align: justify;
+}
+
+.content > ol {
+  list-style: decimal;
+  margin-left: 20px;
+}
+
+.content > ol ul {
+  list-style: none;
+}

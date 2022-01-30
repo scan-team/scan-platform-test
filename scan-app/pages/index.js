@@ -74,7 +74,7 @@ export default function Home({ stats }) {
         <footer className={styles.footer}>
           <div>
             <div>
-              <a href="/SCAN_term_of_use.pdf">Terms of Use</a>
+              <Link href="/terms">Terms of Use</Link>
             </div>
             <div>© 2021 SCAN developers</div>
           </div>
