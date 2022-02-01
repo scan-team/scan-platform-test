@@ -52,7 +52,27 @@ services:
     env_file: .env
     container_name: scan_app
     ports:
-      - '0.0.0.0:80:3000'
+      - "0.0.0.0:3000:3000"
+    #   - '0.0.0.0:80:3000'
+    networks:
+      - scan-network
+
+  nginx:
+    env_file: .env
+    container_name: nginx
+    image: nginx:alpine
+
+    ports:
+      - "0.0.0.0:80:80"
+      - "0.0.0.0.:443:443"
+    volumes:
+      - ./scan-reverse-proxy/root:/usr/local/nginx/html
+      - ./scan-reverse-proxy/conf.d:/etc/nginx/conf.d
+      - ./scan-reverse-proxy/log:/var/log/nginx/
+      - /Users/jfujima/cert:/etc/ssl/certs
+    depends_on:
+      app:
+        condition: service_started
     networks:
       - scan-network
 
