@@ -157,3 +157,6 @@ cython_debug/
 
 # for test data
 ./export.sql
+
+# for docker-compose.yml for local modification
+docker-compose.yml

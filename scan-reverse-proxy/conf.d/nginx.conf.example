@@ -2,14 +2,24 @@ log_format api '$remote_addr - $remote_user [$time_local] "$request" '
     '$status $body_bytes_sent "$http_referer" '
     '"$http_user_agent" "$host" "$http_x_api_key" "$http_x_forwarded_for"';
 
+# redirect
+server {
+  listen 80;
+  server_name _;
+  server_tokens off;
+
+  return 301 https://$host$request_uri;
+}
+
+
 server {
     # listen 0.0.0.0:80;
     listen 0.0.0.0:443 ssl;
 
     # ssl_certificate    /etc/ssl/certs/test.com-selfsigned.crt;
     # ssl_certificate_key    /etc/ssl/certs/test.com-selfsigned.key;
-    ssl_certificate    /etc/ssl/certs/localhost.pem;
-    ssl_certificate_key    /etc/ssl/certs/localhost-key.pem;
+    ssl_certificate    /etc/ssl/certs/localhost+1.pem;
+    ssl_certificate_key    /etc/ssl/certs/localhost+1-key.pem;
 
     client_max_body_size 0;
 
@@ -17,16 +27,15 @@ server {
 
     # server_name 68.183.177.41;
     server_name localhost;
-
     server_tokens off;
     ignore_invalid_headers off;
 
-    # location / {
+    location / {
+        proxy_pass http://app:3000;
+    }
 
-    # }
-
-    location /api/ {
-        proxy_pass http://api/;
+    location /api-public/ {
+        proxy_pass http://api-public/;
 
         add_header "Access-Control-Allow-Origin"  * always;
         add_header "Access-Control-Allow-Methods" "POST, PATCH, PUT, GET, DELETE, OPTIONS" always;
@@ -53,7 +62,17 @@ server {
     }
 }
 
-upstream api {
+# upstream app {
+#     ip_hash;
+#     server scan_app:3000;
+# }
+
+# upstream api-internal {
+#     ip_hash;
+#     server scan_api:8000;
+# }
+
+upstream api-public {
     ip_hash;
-    server scan_api:8000;
+    server scan_api_public:8000;
 }
