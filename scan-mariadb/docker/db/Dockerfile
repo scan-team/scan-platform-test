@@ -10,7 +10,8 @@ RUN apt-get update && apt-get install -y \
   libmysqlclient-dev \
   cmake \
   git \
-  wget
+  wget \
+  pv
 
 WORKDIR /root/mychem
 

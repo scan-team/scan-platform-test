@@ -46,7 +46,7 @@ You may download and import it for test purpose.
 To import it, you may
 
 ```
-> scan-mariadb/import.sh export.eql
+> scan-mariadb/import.sh export.sql
 ```
 
 ## LICENSE
