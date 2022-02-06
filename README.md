@@ -2,12 +2,16 @@
 
 This is a monorepo for SCAN Platform. It consists of three main components:
 
-* scan-mariadb
+* mysql_host
   * Database
-* scan-api-internal
+* scan_api_internal
   * Backend-api for scan-app
-* scan-app
+* scan_api_public
+  * Public api app
+* scan_app
   * Web interface for SCAN Platform
+* nginx
+  * Reverse proxy
 
 
 ## Start up the platform
@@ -19,7 +23,10 @@ Additionally, the following things are needed.
 
 1. You need to set up an [auth0](https://auth0.com/) tenant and a Single Page Application. Please refer to the [documentation](https://auth0.com/docs) provided by auth0 for the detail instruction.
 
-2. Copy `.env.sample` to `.env` and edit it property. Especially, you need to specify the correct auth0 variables.
+2. Copy `.env.sample` to `.env` and edit it properly. Especially, you need to specify the correct auth0 variables.
+3. Copy `scan-reverse-proxy/conf.d/nginx.conf.example` to `scan-reverse-proxy/conf.d/nginx.conf` and edit it properly.
+4. Copy `docker-compose.yml.example` to `docker-compose.yml` and edit it properly.
+
 
 ### Start up
 
