@@ -1,0 +1,26 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+fastapi = "*"
+uvicorn = "*"
+pandas = "*"
+pymysql = "*"
+sqlalchemy = "*"
+cryptography = "*"
+pydantic = "*"
+ulid-py = "*"
+fastapi-simple-security = "*"
+fastapi-pagination = {extras = ["all"], version = "*"}
+fastapi-limiter = "*"
+aioredis = "*"
+
+[dev-packages]
+black = "==20.8b1"
+autoflake = "*"
+isort = "*"
+
+[requires]
+python_version = "3.8"

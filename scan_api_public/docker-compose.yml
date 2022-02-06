@@ -1,0 +1,34 @@
+version: "3.5"
+services:
+
+  redis:
+    restart: always
+    image: redis:6.0
+    container_name: scan_redis
+    expose:
+      - "6379"
+    logging:
+      driver: "json-file" # defaults if not specified
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+
+  api:
+    build: .
+    image: jfujima/scan/api
+    container_name: scan_api
+    env_file: .env
+    ports:
+      - "127.0.0.1:${API_PORT}:8000"
+    volumes:
+      - ./keyfiles:/keyfiles
+    depends_on:
+      - redis
+
+
+
+networks:
+  default:
+    external:
+      name: scan-network
