@@ -10,8 +10,6 @@ import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import terms from './terms.md';
 
-console.log(terms);
-
 export default function Home({}) {
   return (
     <Layout>

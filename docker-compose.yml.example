@@ -78,6 +78,7 @@ services:
       dockerfile: ./Dockerfile
       args:
         - NEXT_PUBLIC_SCAN_API_PROXY_ROOT=${NEXT_PUBLIC_SCAN_API_PROXY_ROOT}
+        - NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=${NEXT_PUBLIC_GOOGLE_ANALYTICS_ID}
     image: jfujima/scan/app
     env_file: .env
     container_name: scan_app
