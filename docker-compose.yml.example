@@ -59,6 +59,7 @@ services:
       - redis
     networks:
       - scan-network
+    user: '${USERID}:${GROUPID}'
 
   api_internal:
     build:
