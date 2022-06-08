@@ -11,7 +11,7 @@ server {
   return 301 https://$host$request_uri;
 }
 
-
+# Make sure the filenames of the ssl certs are correct, the paths are fine and can be left as is
 server {
     # listen 0.0.0.0:80;
     listen 0.0.0.0:443 ssl;

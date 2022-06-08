@@ -1,3 +1,20 @@
+# =================================================================================================
+# Project: SCAN - Searching Chemical Actions and Networks
+#          Hokkaido University (2021)
+# ________________________________________________________________________________________________
+# Authors: Jun Fujima (Former Lead Developer) [2021]
+#          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+# ________________________________________________________________________________________________
+# Description: This is the .gitignore file that tells the projects which files in the 
+#              scan-api-internal folder that should never be included when pushing project files 
+#              to GitHub.
+# ------------------------------------------------------------------------------------------------
+# Notes: 
+# ------------------------------------------------------------------------------------------------
+# References: 
+# =================================================================================================
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

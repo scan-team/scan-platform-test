@@ -1,13 +1,27 @@
+# =================================================================================================
+# Project: SCAN - Searching Chemical Actions and Networks
+#          Hokkaido University (2021)
+# ________________________________________________________________________________________________
+# Authors: Jun Fujima (Former Lead Developer) [2021]
+#          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+# ________________________________________________________________________________________________
+# Description: This is the docker-compose file for the scan-mariadb database part of the SCAN 
+#              project which defines those services and more that is required in order to run 
+#              the DB.
+# ------------------------------------------------------------------------------------------------
+# Notes: You only need to care about this if you ever wish to run this part of SCAN on its own.
+# ------------------------------------------------------------------------------------------------
+# References: 
+# =================================================================================================
 version: '3.5'
 
 services:
-  # MySQL
+  # MySQL, MariaDB version
   db:
     build: ./docker/db
     container_name: mysql_host
     env_file:
       - .env
-    # command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
       - ./docker/db/data:/var/lib/mysql
       - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
@@ -15,7 +29,6 @@ services:
       - ./docker/db/scripts:/scripts
     ports:
       - 127.0.0.1:3306:3306
-    # - 3306:3306
     networks:
       - scan-network
     user: '${USERID}:${GROUPID}'

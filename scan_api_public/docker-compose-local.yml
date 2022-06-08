@@ -1,3 +1,18 @@
+# =================================================================================================
+# Project: SCAN - Searching Chemical Actions and Networks
+#          Hokkaido University (2021)
+# ________________________________________________________________________________________________
+# Authors: Jun Fujima (Former Lead Developer) [2021]
+#          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+# ________________________________________________________________________________________________
+# Description: This is the local docker-compose file for the scan-api-public part of the SCAN 
+#              project which defines those services and more that is required in order to run 
+#              the internal API.
+# ------------------------------------------------------------------------------------------------
+# Notes: You only need to care about this if you ever wish to run this part of SCAN on its own.
+# ------------------------------------------------------------------------------------------------
+# References: 
+# =================================================================================================
 version: "3.5"
 services:
   api:
@@ -6,9 +21,10 @@ services:
     container_name: scan_api
     env_file: .env
     ports:
-      - "${API_PORT}:8000"
+      - "${API_PORT}:8000" # This is different in the non-local version
 
 networks:
   default:
     external:
       name: scan-network
+      

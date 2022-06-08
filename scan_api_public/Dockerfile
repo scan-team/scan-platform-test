@@ -1,3 +1,17 @@
+# =================================================================================================
+# Project: SCAN - Searching Chemical Actions and Networks
+#          Hokkaido University (2021)
+# ________________________________________________________________________________________________
+# Authors: Jun Fujima (Former Lead Developer) [2021]
+#          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+# ________________________________________________________________________________________________
+# Description: This is the Dockerfile for the scan-api-public part of the SCAN Project.
+# ------------------------------------------------------------------------------------------------
+# Notes: 
+# ------------------------------------------------------------------------------------------------
+# References: 
+# =================================================================================================
+
 FROM python:3.8
 
 LABEL maintainer "jfujima"
@@ -16,17 +30,10 @@ RUN pipenv install --system
 # add to application
 ADD app.py /
 ADD service service
-ADD scan_analytics scan_analytics
 ADD grrm grrm
-# ADD sqlite.db sqlite.db
 ADD keyfiles keyfiles
 
-# ARG root_path=aaa
-# ENV ROOT_PATH=$root_path
-
-# RUN echo "${ROOT_PATH}"
 RUN echo $PUBLIC_API_ROOT_PATH
 
 EXPOSE 8000
-#CMD ["uvicorn", "app:api", "--host", "0.0.0.0", "--port", "8000", "--root-path", "echo '/api'"]
 CMD uvicorn app:api --host 0.0.0.0 --port 8000 --root-path $PUBLIC_API_ROOT_PATH

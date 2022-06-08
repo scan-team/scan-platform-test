@@ -1,3 +1,22 @@
+# =================================================================================================
+# Project: SCAN - Searching Chemical Actions and Networks
+#          Hokkaido University (2021)
+# ________________________________________________________________________________________________
+# Authors: Jun Fujima (Former Lead Developer) [2021]
+#          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+# ________________________________________________________________________________________________
+# Description: This is the Database Class for the GRRM (Global Reaction Route Mapping) 
+#              system of the scan-api-internal parts of the Scan Platform Project.
+# ------------------------------------------------------------------------------------------------
+# Notes: 
+# ------------------------------------------------------------------------------------------------
+# References: ulid, 3rd party sqlalchemy and internal grrm models
+# =================================================================================================
+
+
+# -------------------------------------------------------------------------------------------------
+# Load required libraries
+# -------------------------------------------------------------------------------------------------
 import ulid
 from sqlalchemy import desc, func
 from sqlalchemy.orm import Session
@@ -8,7 +27,12 @@ from sqlalchemy.dialects import mysql
 
 from grrm import models
 
+# -------------------------------------------------------------------------------------------------
 
+
+# -------------------------------------------------------------------------------------------------
+# Database Class
+# -------------------------------------------------------------------------------------------------
 class Database:
     @staticmethod
     def get_maps(
@@ -31,19 +55,15 @@ class Database:
 
         if len(atoms) > 0:
             atoms_str = str(atoms).replace("'", '"')
-            # q = q.filter(func.json_contains(models.GRRMMap.atom_name, f'["H", "C"]'))
             q = q.filter(func.json_contains(models.GRRMMap.atom_name, f"{atoms_str}"))
 
         if sort:
             sorts = sort.split(",")
-            print(sorts)
             for s in sorts:
                 if s.startswith("-"):
                     q = q.order_by(desc(models.GRRMMap.__dict__[s.lstrip("-")]))
                 else:
                     q = q.order_by(asc(models.GRRMMap.__dict__[s.lstrip("+")]))
-
-        # print(str(q.statement.compile()))
 
         if before:
             q = q.filter(models.GRRMMap.updated_at <= before)
@@ -77,19 +97,15 @@ class Database:
 
         if len(atoms) > 0:
             atoms_str = str(atoms).replace("'", '"')
-            # q = q.filter(func.json_contains(models.GRRMMap.atom_name, f'["H", "C"]'))
             q = q.filter(func.json_contains(models.GRRMMap.atom_name, f"{atoms_str}"))
 
         if sort:
             sorts = sort.split(",")
-            print(sorts)
             for s in sorts:
                 if s.startswith("-"):
                     q = q.order_by(desc(models.GRRMMap.__dict__[s.lstrip("-")]))
                 else:
                     q = q.order_by(asc(models.GRRMMap.__dict__[s.lstrip("+")]))
-
-        # print(str(q.statement.compile()))
 
         if before:
             q = q.filter(models.GRRMMap.updated_at <= before)
@@ -117,8 +133,7 @@ class Database:
         """
 
         accessible_maps = Database.get_accessible_maps(db)
-
-        print("smiles:", smiles)
+        
         q = db.query(models.EQStructures.map_id).filter(models.EQStructures.map_id.in_(m.id for m in accessible_maps.all()))
         q = q.filter(
             func.match_substruct(
@@ -129,13 +144,10 @@ class Database:
         q = q.distinct()
         l = list(q.all())
         map_ids = list(map(lambda x: ulid.from_bytes(x[0]), l))
-        print(len(map_ids), "items found.")
-
         qdummy = db.query(models.GRRMMap).filter(models.GRRMMap.id.in_(map_ids))
 
-        print("----")
-
         return qdummy
+
 
     @staticmethod
     def get_map(
@@ -150,6 +162,7 @@ class Database:
         """
         id = ulid.parse(map_id)
         return db.query(models.GRRMMap).filter(models.GRRMMap.id == id).first()
+
 
     @staticmethod
     def get_graph(
@@ -170,8 +183,8 @@ class Database:
             .first()
             .graph_csv
         )
-        # print("csv:", csv)
         return csv
+
 
     @staticmethod
     def get_eqs(
@@ -191,7 +204,6 @@ class Database:
         q = db.query(models.Eq).filter(models.Eq.map == map)
         if sort:
             sorts = sort.split(",")
-            print(sorts)
             for s in sorts:
                 if s.startswith("-"):
                     q = q.order_by(desc(models.Eq.__dict__[s.lstrip("-")]))
@@ -200,6 +212,7 @@ class Database:
 
         return q
 
+
     @staticmethod
     def get_eqs_with_smiles(
         db: Session,
@@ -207,7 +220,6 @@ class Database:
         sort="updated_at",
     ):
 
-        print("smiles:", smiles)
         q = db.query(models.EQStructures)
         q = q.filter(
             func.match_substruct(
@@ -219,6 +231,7 @@ class Database:
 
         return q
 
+
     @staticmethod
     def get_eq(db: Session, eq_id: str):
         """
@@ -229,6 +242,7 @@ class Database:
         """
         id = ulid.parse(eq_id)
         return db.query(models.Eq).filter(models.Eq.id == id).first()
+
 
     @staticmethod
     def get_eq_measure(db: Session, eq_id: str):
@@ -278,7 +292,6 @@ class Database:
         q = db.query(models.Edge).filter(models.Edge.map == map)
         if sort:
             sorts = sort.split(",")
-            print(sorts)
             for s in sorts:
                 if s.startswith("-"):
                     q = q.order_by(desc(models.Edge.__dict__[s.lstrip("-")]))
@@ -286,6 +299,7 @@ class Database:
                     q = q.order_by(asc(models.Edge.__dict__[s.lstrip("+")]))
 
         return q
+
 
     @staticmethod
     def get_edge(db: Session, edge_id: str):
@@ -297,6 +311,7 @@ class Database:
         """
         id = ulid.parse(edge_id)
         return db.query(models.Edge).filter(models.Edge.id == id).first()
+
 
     @staticmethod
     def get_pathnodes(
@@ -322,6 +337,7 @@ class Database:
 
         return pathnodes
 
+
     @staticmethod
     def get_pathnode(db: Session, pnode_id: str):
         """
@@ -332,3 +348,5 @@ class Database:
         """
         id = ulid.parse(pnode_id)
         return db.query(models.PNode).filter(models.PNode.id == id).first()
+
+# -------------------------------------------------------------------------------------------------

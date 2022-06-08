@@ -1,0 +1,14 @@
+# =================================================================================================
+# Project: SCAN - Searching Chemical Actions and Networks
+#          Hokkaido University (2021)
+# ________________________________________________________________________________________________
+# Authors: Jun Fujima (Former Lead Developer) [2021]
+#          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+# ________________________________________________________________________________________________
+# Description: This file is used for git to track empty directories.
+# ------------------------------------------------------------------------------------------------
+# Notes: In this specific case; the scan-mariadb/docker/dv/data directory, 
+#        which will, when populated, be filled with the SCAN data.
+# ------------------------------------------------------------------------------------------------
+# References: 
+# =================================================================================================

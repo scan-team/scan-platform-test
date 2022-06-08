@@ -1,3 +1,21 @@
+<!---
+=================================================================================================
+ Project: SCAN - Searching Chemical Actions and Networks
+                 Hokkaido University (2021)
+________________________________________________________________________________________________
+ Authors: Jun Fujima (Former Lead Developer) [2021]
+          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+________________________________________________________________________________________________
+ Description: This is the scan-app README.md file that explains how to get the SCAN web 
+              application up and running in the browser (as stand-alone, not using start.sh).
+------------------------------------------------------------------------------------------------
+ Notes: 
+------------------------------------------------------------------------------------------------
+ References: 
+=================================================================================================
+--->
+# SCAN APP
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started

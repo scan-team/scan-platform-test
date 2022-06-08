@@ -1,4 +1,23 @@
+/*=================================================================================================
+# Project: SCAN - Searching Chemical Actions and Networks
+#          Hokkaido University (2021)
+# ________________________________________________________________________________________________
+# Authors: Jun Fujima (Former Lead Developer) [2021]
+#          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+# ________________________________________________________________________________________________
+# Description: This is the sql script that creates and initiates all SCAN-related tables in the 
+#              SCAN database, used for initiation setup.
+# ------------------------------------------------------------------------------------------------
+# Notes: 
+# ------------------------------------------------------------------------------------------------
+# References: 
+=================================================================================================*/
+
+
+---------------------------------------------------------------------------------------------
 --- create ----
+---------------------------------------------------------------------------------------------
+
 create table IF not exists `maps`
 (
   `id`              binary(16) NOT NULL,
@@ -43,7 +62,6 @@ create table IF not exists `maps`
   PRIMARY KEY (`id`)
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
---- ALTER TABLE `maps` CHANGE `siml_tempearture_kelvin` `siml_temperature_kelvin` LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL;
 
 create table IF not exists `eqs`
 (
@@ -152,7 +170,9 @@ create table IF not exists `ttokens`
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 
+---------------------------------------------------------------------------------------------
 --- for searching ---
+---------------------------------------------------------------------------------------------
 
 create table IF not exists `eq_structures`
 (
@@ -211,7 +231,9 @@ create table IF not exists `edge_structures`
 CREATE FULLTEXT INDEX IF not exists  `idx_edge_structures_smiles` ON `edge_structures` (`smiles`);
 
 
+---------------------------------------------------------------------------------------------
 --- for analysis ---
+---------------------------------------------------------------------------------------------
 
 create table IF not exists `eq_measures`
 (
