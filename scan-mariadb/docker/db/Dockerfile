@@ -1,6 +1,18 @@
-# FROM mysql:5.7
-FROM mariadb:10.2
+# =================================================================================================
+# Project: SCAN - Searching Chemical Actions and Networks
+#          Hokkaido University (2021)
+# ________________________________________________________________________________________________
+# Authors: Jun Fujima (Former Lead Developer) [2021]
+#          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+# ________________________________________________________________________________________________
+# Description: This is the Dockerfile for the mariadb Database part of the SCAN Project.
+# ------------------------------------------------------------------------------------------------
+# Notes: 
+# ------------------------------------------------------------------------------------------------
+# References: 
+# =================================================================================================
 
+FROM mariadb:10.2
 
 RUN apt-get update && apt-get install -y \
   openbabel \
@@ -16,8 +28,6 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /root/mychem
 
 RUN git clone https://github.com/jfujima/mychem-code.git /root/mychem
-# RUN git clone https://github.com/mychem/mychem-code.git /root/mychem
-# RUN git clone https://github.com/Pansanel/mychem-code.git /root/mychem
 
 RUN chmod 755 /root/mychem
 WORKDIR /root/mychem/build
@@ -27,9 +37,6 @@ RUN cmake ..
 RUN make
 
 RUN make install
-
-# RUN adduser scan
-# USER scan
 
 WORKDIR /
 

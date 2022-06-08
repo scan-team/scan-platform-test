@@ -1,7 +1,21 @@
+# =================================================================================================
+# Project: SCAN - Searching Chemical Actions and Networks
+#          Hokkaido University (2021)
+# ________________________________________________________________________________________________
+# Authors: Jun Fujima (Former Lead Developer) [2021]
+#          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+# ________________________________________________________________________________________________
+# Description: This is the docker-compose file for the entire SCAN project that defines all 
+#              services and more that is required in order to run the app.
+# ------------------------------------------------------------------------------------------------
+# Notes: 
+# ------------------------------------------------------------------------------------------------
+# References: 
+# =================================================================================================
 version: '3.5'
 
 services:
-  # MySQL
+  # MySQL, MariaDB version
   db:
     build: ./scan-mariadb/docker/db
     container_name: mysql_host
@@ -14,7 +28,6 @@ services:
       - ./scan-mariadb/docker/db/scripts:/scripts
     ports:
       - 127.0.0.1:3306:3306
-    # - 3306:3306
     networks:
       - scan-network
     user: '${USERID}:${GROUPID}'
@@ -30,6 +43,7 @@ services:
     networks:
       - scan-network
 
+  # Redis - in-memory data structure store
   redis:
     restart: always
     image: redis:6.0
@@ -37,7 +51,7 @@ services:
     expose:
       - "6379"
     logging:
-      driver: "json-file" # defaults if not specified
+      driver: "json-file"
       options:
         max-size: "10m"
         max-file: "5"
@@ -85,10 +99,10 @@ services:
     container_name: scan_app
     ports:
       - "0.0.0.0:3000:3000"
-    #   - '0.0.0.0:80:3000'
     networks:
       - scan-network
 
+  # make sure the real path of the SSL Certs are correct in the last line under  volumes
   nginx:
     env_file: .env
     container_name: nginx

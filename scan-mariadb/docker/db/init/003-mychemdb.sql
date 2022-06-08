@@ -1,11 +1,23 @@
---
--- This SQL script creates the functions provided by Mychem
---
+/*=================================================================================================
+# Project: SCAN - Searching Chemical Actions and Networks
+#          Hokkaido University (2021)
+# ________________________________________________________________________________________________
+# Authors: Jun Fujima (Former Lead Developer) [2021]
+#          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+# ________________________________________________________________________________________________
+# Description: This is the sql script that creates the functions provided by Mychemdrops which
+#              is used in the SCAN database by the SCAN project, called during initiation setup.
+# ------------------------------------------------------------------------------------------------
+# Notes: 
+# ------------------------------------------------------------------------------------------------
+# References: 
+=================================================================================================*/
+
 USE mysql;
 
---
+---------------------------------------------------------------------------------------------
 -- Functions related to chemical format conversion
---
+---------------------------------------------------------------------------------------------
 DROP FUNCTION IF EXISTS molfile_to_molecule;
 CREATE FUNCTION molfile_to_molecule RETURNS STRING SONAME "libmychem.so";
 
@@ -69,9 +81,10 @@ CREATE FUNCTION mol2_to_molecule RETURNS STRING SONAME "libmychem.so";
 DROP FUNCTION IF EXISTS molecule_to_mol2;
 CREATE FUNCTION molecule_to_mol2 RETURNS STRING SONAME "libmychem.so";
 
---
+
+---------------------------------------------------------------------------------------------
 -- Functions related to the helper
---
+---------------------------------------------------------------------------------------------
 DROP FUNCTION IF EXISTS mychem_version;
 CREATE FUNCTION mychem_version RETURNS STRING SONAME "libmychem.so";
 
@@ -81,9 +94,10 @@ CREATE FUNCTION openbabel_version RETURNS STRING SONAME "libmychem.so";
 DROP FUNCTION IF EXISTS inchi_version;
 CREATE FUNCTION inchi_version RETURNS STRING SONAME "libmychem.so";
 
---
+
+---------------------------------------------------------------------------------------------
 -- Functions related to chemical data modifications
---
+---------------------------------------------------------------------------------------------
 DROP FUNCTION IF EXISTS add_hydrogens;
 CREATE FUNCTION add_hydrogens RETURNS STRING SONAME "libmychem.so";
 
@@ -93,9 +107,10 @@ CREATE FUNCTION remove_hydrogens RETURNS STRING SONAME "libmychem.so";
 DROP FUNCTION IF EXISTS strip_salts;
 CREATE FUNCTION strip_salts RETURNS STRING SONAME "libmychem.so";
 
---
+
+---------------------------------------------------------------------------------------------
 -- Functions related to chemical match
---
+---------------------------------------------------------------------------------------------
 DROP FUNCTION IF EXISTS match_substruct;
 CREATE FUNCTION match_substruct RETURNS INTEGER SONAME "libmychem.so";
 
@@ -117,9 +132,10 @@ CREATE FUNCTION bit_fp_or RETURNS STRING SONAME "libmychem.so";
 DROP FUNCTION IF EXISTS bit_fp_count;
 CREATE FUNCTION bit_fp_count RETURNS INTEGER SONAME "libmychem.so";
 
---
+
+---------------------------------------------------------------------------------------------
 -- Functions related to chemical property calculations
---
+---------------------------------------------------------------------------------------------
 DROP FUNCTION IF EXISTS molweight;
 CREATE FUNCTION molweight RETURNS REAL SONAME "libmychem.so";
 

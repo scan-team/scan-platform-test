@@ -1,9 +1,29 @@
 #!/bin/bash
+
+# =================================================================================================
+# Project: SCAN - Searching Chemical Actions and Networks
+#          Hokkaido University (2021)
+# ________________________________________________________________________________________________
+# Authors: Jun Fujima (Former Lead Developer) [2021]
+#          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+# ________________________________________________________________________________________________
+# Description: This is the export.sh bash file that calls for Dockers internal database 
+#              export script to run.
+# ------------------------------------------------------------------------------------------------
+# Notes: 
+# ------------------------------------------------------------------------------------------------
+# References: 
+# =================================================================================================
+
+
+# Make sure the script exits if anything goes wrong
 set -euxo pipefail
 
+# Pass the current user- and group- id into docker-compose.yml
 export USERID=$(id -u)
 export GROUPID=$(id -g)
 
+# Tells Docker Compose to prepare and run the shell script that exports a specified Database to a sql-file
 OPS=
 if [ $# -ge 1 ]; then
   OPS=$1
