@@ -3,7 +3,7 @@ version: '3.5'
 services:
   # MySQL
   db:
-    build: ./scan-mariadb/docker/db
+    image: scan-mariadb
     container_name: mysql_host
     env_file:
       - .env
@@ -45,10 +45,7 @@ services:
       - scan-network
 
   api_internal:
-    build:
-      context: ./scan_api_internal
-      dockerfile: ./Dockerfile-dev
-    image: jfujima/scan/api_internal
+    image: scan_api_internal
     container_name: scan_api_internal
     env_file: .env
     ports:
@@ -64,10 +61,7 @@ services:
       - scan-network  
         
   api_public:
-    build:
-      context: ./scan_api_public
-      dockerfile: ./Dockerfile-dev
-    image: jfujima/scan/api_public
+    image: scan_api_public
     container_name: scan_api_public
     env_file: .env
     ports:
@@ -85,13 +79,7 @@ services:
     user: '${USERID}:${GROUPID}'
 
   app:
-    build:
-      context: ./scan-app
-      dockerfile: ./Dockerfile-dev
-      args:
-        - NEXT_PUBLIC_SCAN_API_PROXY_ROOT=${NEXT_PUBLIC_SCAN_API_PROXY_ROOT}
-        - NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=${NEXT_PUBLIC_GOOGLE_ANALYTICS_ID}
-    image: jfujima/scan/app
+    image: scan-app
     env_file: .env
     container_name: scan_app
     ports:

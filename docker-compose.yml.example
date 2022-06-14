@@ -3,7 +3,7 @@ version: '3.5'
 services:
   # MySQL
   db:
-    build: ./scan-mariadb/docker/db
+    image: scan-mariadb
     container_name: mysql_host
     env_file:
       - .env
@@ -45,10 +45,7 @@ services:
       - scan-network
 
   api_public:
-    build:
-      context: ./scan_api_public
-      dockerfile: ./Dockerfile
-    image: jfujima/scan/api_public
+    image: scan_api_public
     container_name: scan_api_public
     env_file: .env
     ports:
@@ -62,10 +59,7 @@ services:
     user: '${USERID}:${GROUPID}'
 
   api_internal:
-    build:
-      context: ./scan_api_internal
-      dockerfile: ./Dockerfile
-    image: jfujima/scan/api_internal
+    image: scan_api_internal
     container_name: scan_api_internal
     env_file: .env
     ports:
@@ -74,13 +68,7 @@ services:
       - scan-network
 
   app:
-    build:
-      context: ./scan-app
-      dockerfile: ./Dockerfile
-      args:
-        - NEXT_PUBLIC_SCAN_API_PROXY_ROOT=${NEXT_PUBLIC_SCAN_API_PROXY_ROOT}
-        - NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=${NEXT_PUBLIC_GOOGLE_ANALYTICS_ID}
-    image: jfujima/scan/app
+    image: scan-app
     env_file: .env
     container_name: scan_app
     ports:
@@ -96,12 +84,12 @@ services:
 
     ports:
       - "0.0.0.0:80:80"
-      - "0.0.0.0.:443:443"
+      - "0.0.0.0:443:443"
     volumes:
       - ./scan-reverse-proxy/root:/usr/local/nginx/html
       - ./scan-reverse-proxy/conf.d:/etc/nginx/conf.d
       - ./scan-reverse-proxy/log:/var/log/nginx/
-      - /Users/jfujima/cert:/etc/ssl/certs
+      - /etc/ssl/certs:/etc/ssl/certs
     depends_on:
       app:
         condition: service_started
@@ -109,9 +97,7 @@ services:
       - scan-network
   
   observer:
-    build:
-      context: ./scan_data_observer
-      dockerfile: ./Dockerfile
+    image: scan_data_observer
     container_name: observer
     env_file: .env
     volumes:
