@@ -6,11 +6,11 @@ import subprocess
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
 
-def file_completed(p, msg = "waiting...", WAIT = 10):
+def file_completed(p, msg = "waiting... ", WAIT = 10):
     before = (None, None)
     wait = WAIT
 
-    print(msg, flush=True)
+    print(msg+p, flush=True)
     while True:
         if not wait: break
 
@@ -32,8 +32,9 @@ if __name__ == "__main__":
         filename = os.path.splitext(os.path.basename(src))[0]
         basename = f'/tmp/{filename}'
         shutil.unpack_archive(src, basename)
-        subprocess.run(['bash', 'register.sh', basename])
+        subprocess.run(['bash', 'register.sh', basename,src])
         shutil.rmtree(basename)
+        print("finished ..."+src)
     event_handler = PatternMatchingEventHandler(['*.zip'])
     event_handler.on_created = on_created
     observer = Observer()
