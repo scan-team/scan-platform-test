@@ -107,6 +107,19 @@ services:
         condition: service_started
     networks:
       - scan-network
+  
+  observer:
+    build:
+      context: ./scan_data_observer
+      dockerfile: ./Dockerfile
+    container_name: observer
+    env_file: .env
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./scan_data_observer/data/:/data
+      - ./scan_data_observer/logs/:/logs
+    networks:
+      - scan-network
 
 networks:
   scan-network:

@@ -1,0 +1,3 @@
+[submodule "scan_data_observer/scan_data_importer"]
+	path = scan_data_observer/scan_data_importer
+	url = https://github.com/scan-team/scan_data_importer.git
