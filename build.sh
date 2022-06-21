@@ -1,0 +1,1 @@
+docker build ./scan_data_observer/scan_data_importer -t scan_data_importer
