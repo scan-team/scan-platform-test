@@ -1,20 +1,38 @@
+//================================================================================================
+// Project: SCAN - Searching Chemical Actions and Networks
+//                 Hokkaido University (2021)
+//________________________________________________________________________________________________
+// Authors: Jun Fujima (Former Lead Developer) [2021]
+//          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+//________________________________________________________________________________________________
+// Description: This is a Graph-Viewer Display Component that takes data map input (from the DB) 
+//              and returns a html block using the Viva-graph library to display a interactive 
+//              node graph as requested. [Next.js React.js]
+//------------------------------------------------------------------------------------------------
+// Notes: 
+//------------------------------------------------------------------------------------------------
+// References: React components, 3rd-party libraries; Viva, d3, CircularProgress, Popper
+//             and internal mol-viewer-cd-3d
+//================================================================================================
+
+//------------------------------------------------------------------------------------------------
+// Load required libraries
+//------------------------------------------------------------------------------------------------
 import React, { useEffect, useState, useRef } from 'react';
+
 import Viva from 'vivagraphjs';
 import * as d3 from 'd3';
 import { render } from 'react-dom';
-import { map } from 'd3';
-import { startOfSecond } from 'date-fns';
-import { SuggestionsController } from '@fluentui/react';
-
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Popper from '@material-ui/core/Popper';
-
 import MolViewer from './mol-viewer-cd-3d';
 
-console.log(Viva);
-// window.Viva = Viva;
-// window.d3 = d3;
+//------------------------------------------------------------------------------------------------
 
+
+//------------------------------------------------------------------------------------------------
+// Init global constants and variables
+//------------------------------------------------------------------------------------------------
 const apiRoot = process.env.NEXT_PUBLIC_SCAN_API_PROXY_ROOT;
 
 const options = [
@@ -25,25 +43,34 @@ const options = [
   { key: 'pagerank', text: 'Pagerank' },
 ];
 
-const testStyle = {
-  // backgroundColor: 'blue',
-  // width: '800px',
+const stylePack = {
+  // backgroundColor: '#f7f5b7', //light yellowish
   width: '100%',
-  // height: '600px',
   height: '100vh',
   position: 'relative',
   overflow: 'hidden',
 };
 
+//------------------------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------------------------
+// Clear Child Nodes
+//------------------------------------------------------------------------------------------------
 const clearChildNodes = function (container) {
   while (container.firstChild) {
     container.removeChild(container.firstChild);
   }
 };
 
-function generateDOMLabels(graph, container, labeledNodes) {
-  // this will map node id into DOM element
-  console.log(labeledNodes);
+//------------------------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------------------------
+// Generate DOM Labels
+// This will map node id into DOM element
+//------------------------------------------------------------------------------------------------
+function generateDOMLabels(graph, container, labeledNodes) {  
   const labels = Object.create(null);
   graph.forEachNode(function (node) {
     if (labeledNodes.includes(node.id)) {
@@ -54,12 +81,16 @@ function generateDOMLabels(graph, container, labeledNodes) {
       container.appendChild(label);
     }
   });
-
-  // NOTE: If your graph changes over time you will need to
-  // monitor graph changes and update DOM elements accordingly
+  
   return labels;
 }
 
+//------------------------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------------------------
+// Graph Viewer (React) Component
+//------------------------------------------------------------------------------------------------
 const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
   const container = useRef(null);
   const graphics = useRef(null);
@@ -82,15 +113,10 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
 
   const pinnedRef = useRef(pinned);
 
-  // console.log('highlightedNodes', highlightedNodes);
-
-  useEffect(() => {
-    console.log('init');
+  useEffect(() => {    
     setIsWaitingResults(true);
 
     const handleNodeClick = (node) => {
-      console.log('click node', node);
-      // history.push('./node/' + node.id);
       window.open('/eqs/' + node.id);
     };
 
@@ -98,8 +124,6 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
       if (pinnedRef.current == false) {
         return;
       }
-      // console.log(l.current.getNodePosition(node.id));
-      console.log('mouse enter', node);
       setTargetNode(node);
       setAnchorEl(container.current);
       setOpen((prev) => true);
@@ -108,18 +132,13 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
     };
 
     const handleMouseLeave = (node) => {
-      // console.log('mouse leave', node);
       setOpen((prev) => false);
     };
 
     const readData = async () => {
       let mapUrl = `${apiRoot}/maps/${mapId}`;
-
       const map = await d3.json(mapUrl);
-
-      console.log('read data from ', graphUrl);
       const data = await d3.csv(graphUrl);
-      console.log(data);
 
       clearChildNodes(container.current);
 
@@ -140,12 +159,8 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
         }
       });
 
-      console.log('The total number of EQs: ', data.length);
-
       let measuresUrl = `${apiRoot}/maps/${mapId}/eqs/measures`;
-
       const measures = await d3.json(measuresUrl);
-
       const hNodeIds = [];
 
       if (measure != 'energy') {
@@ -164,27 +179,13 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
         }
       }
 
-      console.log(hNodeIds);
-
       measures.forEach((s) => {
         const d = { ...s };
 
         graph.addNode(s.eq_id, d);
       });
 
-      const graphicsOptions = {
-        // clearColor: true, // we want to avoid rendering artifacts
-        clearColorValue: {
-          // use black color to erase background
-          r: 0,
-          g: 0,
-          b: 0,
-          a: 1,
-        },
-      };
-
-      graphics.current = Viva.Graph.View.webglGraphics(graphicsOptions);
-      // const graphics = Viva.Graph.View.svgGraphics(graphicsOptions);
+      graphics.current = Viva.Graph.View.webglGraphics();
 
       var domLabels = generateDOMLabels(
         graph,
@@ -199,18 +200,13 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
           return m[measure];
         }
       });
-      console.log(mValues);
+
       var color = d3
         .scaleSequential(d3.interpolateSpectral)
         .domain([Math.max(...mValues), Math.min(...mValues)]);
-      // var rainbow = d3.scaleSequential(d3.interpolateInferno);
-      // console.log(rainbow);
-
+            
       graphics.current.node((node) => {
-        // console.log(node.id);
-        if (highlightedNodes.includes(node.id)) {
-          console.log(node);
-          console.log(Viva.Graph.View.webglSquare());
+        if (highlightedNodes.includes(node.id)) {          
           return Viva.Graph.View.webglSquare(20, 0xff0000ff);
         }
 
@@ -224,8 +220,6 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
           }
         }
 
-        // return Viva.Graph.View.webglSquare(10, 10414335);
-
         if (node.data?.energy) {
           const c = d3.rgb(color(node.data.energy[0])).formatHex();
           return Viva.Graph.View.webglSquare(10, c);
@@ -235,7 +229,7 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
       });
 
       graphics.current.placeNode((ui, pos) => {
-        // This callback is called by the renderer before it updates
+        // This callback is called by the renderer before it updates 
         // node coordinate. We can use it to update corresponding DOM
         // label position;
 
@@ -255,8 +249,7 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
           labelStyle.top = domPos.y + 'px';
         }
       });
-
-      // const graphics = Viva.Graph.View.svgGraphics();
+      
       const events = Viva.Graph.webglInputEvents(graphics.current, graph);
       events.dblClick(handleNodeClick);
       events.mouseEnter(handleMouseEnter);
@@ -271,8 +264,7 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
       r.current = render;
       g.current = graph;
       l.current = layout;
-
-      console.log('init end', graph);
+      
       setIsWaitingResults(false);
       window.graph = graph;
       window.graphics = graphics.current;
@@ -283,17 +275,12 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
   }, [measure]);
 
   useEffect(async () => {
-    console.log('measure changed.');
-
     if (!graphics.current) {
       return;
     }
-    console.log(measure);
   }, [measure]);
 
   const coloringOptionChange = (e) => {
-    console.log('option changed', e);
-    console.log(e.target.value);
     pinnedRef.current = false;
     setPinned(false);
     setMeasure(e.target.value);
@@ -301,8 +288,6 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
 
   const onClick = (e) => {
     if (pinned) {
-      console.log('resume');
-
       g.current.forEachNode((n) => {
         l.current.pinNode(n, false);
       });
@@ -311,8 +296,7 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
       setOpen(false);
       return;
     }
-
-    console.log('stop');
+    
     // pin all node
     g.current.forEachNode((n) => {
       l.current.pinNode(n, true);
@@ -322,16 +306,9 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
   };
 
   const handleMouseMove = (e) => {
-    // console.log(e);
-    // console.log(e.clientX, e.clientY);
-    // console.log(e.screenX, e.screenY);
-
     const rect = e.target.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-
-    // console.log(x, y);
-    // console.log(`${x},${-y}`);
     setPopupOffset(`${x + 3},${-(y + 3)}`);
   };
 
@@ -344,7 +321,6 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
         modifiers={{
           offset: {
             enabled: true,
-            // offset: '200, 0',
             offset: popupOffset,
           },
         }}
@@ -354,7 +330,6 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
           width={200}
           height={200}
           href={`${apiRoot}/eqs/${targetNode.id}/structure?format=mol`}
-          // buttonEnable={false}
         ></MolViewer>
       </Popper>
 
@@ -373,23 +348,19 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
           })}
         </select>
         <input
+          style={{
+            border: 'darkgreen solid 2px',
+            marginLeft: "10px",
+            padding: "4px",
+            fontWeight: 'bold',
+            backgroundColor: "#04AA6D",
+            color: "white",
+            cursor: "pointer"
+          }}
           type="button"
           onClick={onClick}
-          value={pinnedRef.current ? 'resume' : 'stop'}
+          value={pinnedRef.current ? 'RESUME' : 'STOP'}
         ></input>
-        {/* <select
-          placeholder="Select an option"
-          onChange={coloringOptionChange}
-          value={measure}
-        >
-          {options.map((o) => {
-            return (
-              <option key={o.key} value={o.key}>
-                {o.text}
-              </option>
-            );
-          })}
-        </select> */}
       </div>
 
       {isWaitingResults && (
@@ -398,7 +369,6 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            // height: '100vh',
           }}
         >
           <CircularProgress></CircularProgress>
@@ -406,7 +376,7 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
       )}
 
       <div
-        style={testStyle}
+        style={stylePack}
         ref={container}
         onMouseMove={handleMouseMove}
       ></div>
@@ -414,9 +384,4 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
   );
 };
 
-// const GraphViewerStyled = Styled(GraphViewerOrg)`
-//   background-color: blue;
-// `;
-
-// export const GraphViewer = GraphViewerStyled;
 export const GraphViewer = GraphViewerOrg;

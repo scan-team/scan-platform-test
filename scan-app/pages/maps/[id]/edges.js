@@ -1,22 +1,51 @@
-import { useRef } from 'react';
+//================================================================================================
+// Project: SCAN - Searching Chemical Actions and Networks
+//                 Hokkaido University (2021)
+//________________________________________________________________________________________________
+// Authors: Jun Fujima (Former Lead Developer) [2021]
+//          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+//________________________________________________________________________________________________
+// Description: This is the list of Edges for a specific Map (of specific ID) display page.
+//              [Next.js React.js]
+//------------------------------------------------------------------------------------------------
+// Notes: 
+//------------------------------------------------------------------------------------------------
+// References: head, router and link from NextJS, 3rd partiy libraries: auth0, axios, 
+//             js-file-download, and swr; and internal: wide-layout, pagination-panel and 
+//             edgelist-item components.
+//================================================================================================
+
+//------------------------------------------------------------------------------------------------
+// Load required libraries
+//------------------------------------------------------------------------------------------------
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0';
-
 import axios from 'axios';
 import fileDownload from 'js-file-download';
-
 import useSWR from 'swr';
 
 import Layout from '../../../components/wide-layout';
 import Pagination from '../../../components/pagination-panel';
 import EdgeListItem from '../../../components/edgelist-item';
 
+//------------------------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------------------------
+// Initiation of global values
+//------------------------------------------------------------------------------------------------
 const apiProxyRoot = process.env.NEXT_PUBLIC_SCAN_API_PROXY_ROOT;
 const apiRoot = process.env.SCAN_API_ROOT;
 const fetcher = (url) => fetch(url).then((r) => r.text());
 
+//------------------------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------------------------
+// Edge List (for specific Map) Page
+//------------------------------------------------------------------------------------------------
 export default function EdgeList({
   mapData,
   id,
@@ -26,8 +55,6 @@ export default function EdgeList({
   order,
   page = 1,
 }) {
-  console.log('props:', mapData, id, edgeListResult, sort, size, order, page);
-
   const { user, error, isLoading } = useUser();
   const router = useRouter();
 
@@ -51,9 +78,7 @@ export default function EdgeList({
   }
 
   const sortOptions = ['id', 'edge_id', 'energy', 'connection0', 'connection1'];
-
   const noiOptions = [50, 100, 200];
-
   const properties = [];
   let i = 0;
 
@@ -101,21 +126,16 @@ export default function EdgeList({
   });
 
   const handleChange = (event) => {
-    console.log(event.target.form.sort.value);
-    console.log(event.target.form.size.value);
-
     router.push(
       {
         query: {
           id: id,
           sort: event.target.form.sort.value,
           size: event.target.form.size.value,
-          // order: e.target.order.value,
           page: 1,
         },
       },
       null
-      // { shallow: true }
     );
   };
 
@@ -163,7 +183,6 @@ export default function EdgeList({
                 name="sort"
                 label="Sort:"
                 className="w-38"
-                // onChange={handleChange}
                 defaultValue={sort}
               >
                 {sortOptions?.map((op) => (
@@ -175,7 +194,6 @@ export default function EdgeList({
                 name="size"
                 label="Number of items:"
                 className="w-28"
-                // onChange={handleChange}
                 defaultValue={size}
               >
                 {noiOptions?.map((op) => (
@@ -203,18 +221,19 @@ export default function EdgeList({
     </Layout>
   );
 }
+//------------------------------------------------------------------------------------------------
 
+
+//------------------------------------------------------------------------------------------------
+// Get Server Side Properties Function
+//------------------------------------------------------------------------------------------------
 export const getServerSideProps = withPageAuthRequired({
   async getServerSideProps(context) {
-    console.log(context);
-
     const id = context.query.id;
 
     if (id) {
       let response = null;
-
       const url = encodeURI(`${apiRoot}/maps/${id}`);
-      console.log(url);
 
       response = await fetch(url);
 
@@ -254,3 +273,4 @@ export const getServerSideProps = withPageAuthRequired({
     };
   },
 });
+//------------------------------------------------------------------------------------------------

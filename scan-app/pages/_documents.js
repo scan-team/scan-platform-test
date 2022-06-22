@@ -1,10 +1,33 @@
+//================================================================================================
+// Project: SCAN - Searching Chemical Actions and Networks
+//                 Hokkaido University (2021)
+//________________________________________________________________________________________________
+// Authors: Jun Fujima (Former Lead Developer) [2021]
+//          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+//________________________________________________________________________________________________
+// Description: This is the _document.js file that overrides the basic document provided 
+//              by next.js and allows a bit more complex and customizable control.
+//              [Next.js React.js]
+//------------------------------------------------------------------------------------------------
+// Notes: 
+//------------------------------------------------------------------------------------------------
+// References: ReactJS, head, html, main and nextscript from Next.js, 
+//             3rd partiy libraries: fluentui
+//================================================================================================
+
+//------------------------------------------------------------------------------------------------
+// Load required libraries
+//------------------------------------------------------------------------------------------------
 import * as React from 'react';
 import Document, { Head, Html, Main, NextScript } from 'next/document';
-// Fluent UI React 8+
 import { Stylesheet, InjectionMode, resetIds } from '@fluentui/react';
-// Fluent UI React (Fabric) 7 or earlier
-// import { Stylesheet, InjectionMode, resetIds } from 'office-ui-fabric-react/lib/Utilities';
 
+//------------------------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------------------------
+// Initiation configs
+//------------------------------------------------------------------------------------------------
 // Do this in file scope to initialize the stylesheet before Fluent UI React components are imported.
 const stylesheet = Stylesheet.getInstance();
 
@@ -14,7 +37,13 @@ stylesheet.setConfig({
   namespace: 'server',
 });
 
-// Now set up the document, and just reset the stylesheet.
+//------------------------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------------------------
+// My Document Page 
+// Set up the document, and just reset the stylesheet.
+//------------------------------------------------------------------------------------------------
 export default class MyDocument extends Document {
   static getInitialProps({ renderPage }) {
     stylesheet.reset();
@@ -42,3 +71,4 @@ export default class MyDocument extends Document {
     );
   }
 }
+//------------------------------------------------------------------------------------------------

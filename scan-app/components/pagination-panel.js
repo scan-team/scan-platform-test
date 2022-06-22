@@ -1,10 +1,32 @@
-import Link from 'next/link';
+//================================================================================================
+// Project: SCAN - Searching Chemical Actions and Networks
+//                 Hokkaido University (2021)
+//________________________________________________________________________________________________
+// Authors: Jun Fujima (Former Lead Developer) [2021]
+//          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+//________________________________________________________________________________________________
+// Description: This is a pagination panel display component that let DB result be displayed as 
+//              pages with x number of items. It takes page number info as input and returns a 
+//              html snippet showing the pagination panel in its current mode. [Next.js React.js]
+//------------------------------------------------------------------------------------------------
+// Notes: 
+//------------------------------------------------------------------------------------------------
+// References: link from Next.js, 3rd party swr, and internal date and mol-viewer-cd component
+//================================================================================================
+
+//------------------------------------------------------------------------------------------------
+// Load required libraries
+//------------------------------------------------------------------------------------------------
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/solid';
-import handleCallbackFactory from '@auth0/nextjs-auth0/dist/handlers/callback';
 import Pagination from '@material-ui/lab/Pagination';
 
+//------------------------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------------------------
+// Pagination Panel Component
+//------------------------------------------------------------------------------------------------
 export default function PaginationPanel({
   currentPage,
   start,
@@ -12,13 +34,10 @@ export default function PaginationPanel({
   all,
   totalPages,
 }) {
-  // console.log(all);
   const router = useRouter();
   const [page, setPage] = useState(currentPage);
 
   const onChangePage = (e, pageNumber) => {
-    console.log('ssss');
-    console.log('page change:', pageNumber);
     setPage(pageNumber);
     router.push({
       pathname: router.pathname,
@@ -68,3 +87,4 @@ export default function PaginationPanel({
     </div>
   );
 }
+//------------------------------------------------------------------------------------------------

@@ -1,3 +1,18 @@
+<!--
+=================================================================================================
+ Project: SCAN - Searching Chemical Actions and Networks
+                 Hokkaido University (2021)
+________________________________________________________________________________________________
+ Authors: Jun Fujima (Former Lead Developer) [2021]
+          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+________________________________________________________________________________________________
+ Description: This is the Service Terms of Use Legal text for SCAN as a readme type of .md file.
+------------------------------------------------------------------------------------------------
+ Notes: 
+------------------------------------------------------------------------------------------------
+ References: 
+=================================================================================================
+-->
 # Searching Chemistry and Action (SCAN):<br>SCAN Service Terms of Use
 
 August, 2021

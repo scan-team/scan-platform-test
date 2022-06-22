@@ -1,16 +1,43 @@
+//================================================================================================
+// Project: SCAN - Searching Chemical Actions and Networks
+//                 Hokkaido University (2021)
+//________________________________________________________________________________________________
+// Authors: Jun Fujima (Former Lead Developer) [2021]
+//          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+//________________________________________________________________________________________________
+// Description: This is a Map-list Item display component that takes an Map-list item 
+//              (from the DB) and returns a html snippet showing the different item parts 
+//              accordingly. [Next.js React.js]
+//------------------------------------------------------------------------------------------------
+// Notes: 
+//------------------------------------------------------------------------------------------------
+// References: link from Next.js, 3rd party swr, and internal date and mol-viewer-cd component
+//================================================================================================
+
+//------------------------------------------------------------------------------------------------
+// Load required libraries
+//------------------------------------------------------------------------------------------------
 import Link from 'next/link';
 
 import Date from '../components/date';
 import MolViewerSmall from '../components/mol-viewer-cd';
 import useSWR from 'swr';
 
-const apiRoot = process.env.NEXT_PUBLIC_SCAN_API_PROXY_ROOT;
-console.log('apiRoot', apiRoot);
-console.log('process.env', process.env);
-console.log('scan_api_root', process.env.SCAN_API_ROOT);
+//------------------------------------------------------------------------------------------------
 
+
+//------------------------------------------------------------------------------------------------
+// Init global constants and variables
+//------------------------------------------------------------------------------------------------
+const apiRoot = process.env.NEXT_PUBLIC_SCAN_API_PROXY_ROOT;
 const fetcher = (url) => fetch(url).then((r) => r.text());
 
+//------------------------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------------------------
+// Map-list Item Component
+//------------------------------------------------------------------------------------------------
 export default function MapListItem({ item }) {
   const { data, error } = useSWR(
     `${apiRoot}/maps/${item.id}/init-structure?format=can`,
@@ -68,3 +95,4 @@ export default function MapListItem({ item }) {
     </div>
   );
 }
+//------------------------------------------------------------------------------------------------

@@ -1,13 +1,44 @@
+//================================================================================================
+// Project: SCAN - Searching Chemical Actions and Networks
+//                 Hokkaido University (2021)
+//________________________________________________________________________________________________
+// Authors: Jun Fujima (Former Lead Developer) [2021]
+//          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+//________________________________________________________________________________________________
+// Description: This is a Edge-list Item display component that takes an Edge-list item 
+//              (from the DB) and returns a html snippet showing the different item parts 
+//              accordingly. [Next.js React.js]
+//------------------------------------------------------------------------------------------------
+// Notes: 
+//------------------------------------------------------------------------------------------------
+// References: link for Next, 3rd party swr, and internal date and mol-viewer-cd component
+//================================================================================================
+
+//------------------------------------------------------------------------------------------------
+// Load required libraries
+//------------------------------------------------------------------------------------------------
 import Link from 'next/link';
 
-import Date from './date';
 import MolViewerSmall from './mol-viewer-cd';
 import useSWR from 'swr';
 
-const apiRoot = process.env.NEXT_PUBLIC_SCAN_API_PROXY_ROOT;
+import Date from './date';
 
+//------------------------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------------------------
+// Init global constants and variables
+//------------------------------------------------------------------------------------------------
+const apiRoot = process.env.NEXT_PUBLIC_SCAN_API_PROXY_ROOT;
 const fetcher = (url) => fetch(url).then((r) => r.text());
 
+//------------------------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------------------------
+// Edge-list Item Component
+//------------------------------------------------------------------------------------------------
 export default function EdgeListItem({ item }) {
   const { data, error } = useSWR(
     `${apiRoot}/edges/${item.id}/structure?format=can`,
@@ -63,3 +94,4 @@ export default function EdgeListItem({ item }) {
     </div>
   );
 }
+//------------------------------------------------------------------------------------------------
