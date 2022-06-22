@@ -31,7 +31,7 @@ import Layout from '../components/layout';
 export const getServerSideProps = async (context) => {
   const apiRoot = process.env.SCAN_API_ROOT;
   const url = encodeURI(`${apiRoot}/stats`);
-  console.log(url);
+  //console.log(url);
 
   const response = await fetch(url);
   let atoms = null;
@@ -50,7 +50,6 @@ export const getServerSideProps = async (context) => {
 // Home - Site Start
 //------------------------------------------------------------------------------------------------
 export default function Home({ stats }) {
-  console.log(stats);
   return (
     <Layout>
       <div className={styles.container}>
@@ -59,19 +58,19 @@ export default function Home({ stats }) {
           <link
             rel="apple-touch-icon"
             sizes="180x180"
-            href="/apple-touch-icon.png"
+            href="/images/apple-touch-icon.png"
           />
           <link
             rel="icon"
             type="image/png"
             sizes="32x32"
-            href="/favicon-32x32.png"
+            href="/images/favicon-32x32.png"
           />
           <link
             rel="icon"
             type="image/png"
             sizes="16x16"
-            href="/favicon-16x16.png"
+            href="/images/favicon-16x16.png"
           />
           <link rel="manifest" href="/site.webmanifest" />
           <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
@@ -80,9 +79,9 @@ export default function Home({ stats }) {
         </Head>
 
         <main className={styles.main}>
-          <Image priority src="/scan.png" width={500} height={401} alt="SCAN" />
+          <Image priority src="/images/scan.png" width={500} height={401} alt="SCAN" />
 
-          <h1>Searching Chemical Actions and Networks (THE BEST WAY IMAGINABLE)</h1>
+          <h1>Searching Chemical Actions and Networks</h1>
 
           <Link href="/map-search">
             <button className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">

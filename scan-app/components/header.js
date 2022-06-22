@@ -1,26 +1,35 @@
+//================================================================================================
+// Project: SCAN - Searching Chemical Actions and Networks
+//                 Hokkaido University (2021)
+//________________________________________________________________________________________________
+// Authors: Jun Fujima (Former Lead Developer) [2021]
+//          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+//________________________________________________________________________________________________
+// Description: This is a Top level Head and Menu Display Component that is basically visible on 
+//              all pages and let you navigate to the different main pages of SCAN. 
+//              [Next.js React.js]
+//------------------------------------------------------------------------------------------------
+// Notes: 
+//------------------------------------------------------------------------------------------------
+// References: React.js components, link and image from Next.js, 3rd-party libraries; auth0 
+//             and material-ui tooltip
+//================================================================================================
+
+//------------------------------------------------------------------------------------------------
+// Load required libraries
+//------------------------------------------------------------------------------------------------
 import React from 'react';
 import Link from 'next/link';
+import Tooltip from '@material-ui/core/Tooltip';
 import { useUser } from '@auth0/nextjs-auth0';
 import Image from 'next/image';
 
-const _items = [
-  {
-    key: 'mapSearch',
-    text: 'Map search',
-    href: '/top',
-  },
-  {
-    key: 'eqSearch',
-    text: 'EQ search',
-    href: '/eq-search',
-  },
-  {
-    key: 'pathSearch',
-    text: 'Path Search',
-    href: '/path-search',
-  },
-];
+//------------------------------------------------------------------------------------------------
 
+
+//------------------------------------------------------------------------------------------------
+// Header Component
+//------------------------------------------------------------------------------------------------
 const Header = () => {
   const { user } = useUser();
 
@@ -28,26 +37,25 @@ const Header = () => {
     <header>
       <nav>
         <ul>
-          <li>
+          <li>            
             <Link href="/">
               <a>
-                <Image src="/favicon-32x32.png" width={32} height={32} />
+                <Tooltip title="HOME" placement="bottom">
+                  <div>
+                    <Image src="/images/android-chrome-192x192.png" width={72} height={72} />
+                  </div>
+                </Tooltip>
               </a>
-            </Link>
+            </Link>            
           </li>
-          <li>
+          <li style={{paddingTop: '1rem'}}>
             <Link href="/map-search">
               <a>Map Search</a>
             </Link>
           </li>
-          {/* <li>
-            <Link href="/eq-search">
-              <a>EQ Search</a>
-            </Link>
-          </li> */}
           {user ? (
             <>
-              <li>
+              <li style={{paddingTop: '1rem'}}>
                 <a href="/api/auth/logout" data-testid="logout">
                   Logout
                 </a>
@@ -55,7 +63,7 @@ const Header = () => {
             </>
           ) : (
             <>
-              <li>
+              <li style={{paddingTop: '1rem'}}>
                 <a href="/api/auth/login" data-testid="login">
                   Login
                 </a>
@@ -67,13 +75,13 @@ const Header = () => {
 
       <style jsx>{`
         header {
-          padding: 0.2rem;
+          padding: 0.1rem;
           color: #fff;
           background-color: #333;
         }
         nav {
           max-width: 42rem;
-          margin: 1.5rem auto;
+          margin: 0.2rem auto;
         }
         ul {
           display: flex;
@@ -91,16 +99,10 @@ const Header = () => {
           color: #fff;
           text-decoration: none;
         }
-        button {
-          font-size: 1rem;
-          color: #fff;
-          cursor: pointer;
-          border: none;
-          background: none;
-        }
       `}</style>
     </header>
   );
 };
+//------------------------------------------------------------------------------------------------
 
 export default Header;

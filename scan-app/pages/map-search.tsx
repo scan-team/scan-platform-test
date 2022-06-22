@@ -1,24 +1,46 @@
+//================================================================================================
+// Project: SCAN - Searching Chemical Actions and Networks
+//                 Hokkaido University (2021)
+//________________________________________________________________________________________________
+// Authors: Jun Fujima (Former Lead Developer) [2021]
+//          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+//________________________________________________________________________________________________
+// Description: This is the Map Search Form Page.
+//------------------------------------------------------------------------------------------------
+// Notes: 
+//------------------------------------------------------------------------------------------------
+// References: ReactJS and NextJS libs; 3rd party libs: auth0, Backdrop, material-ui, swr and 
+//             node:constants; Internal libs: layout, maplist-item, mapsort-options and 
+//             pagination-panel components [ReactJS and NextJS]
+//================================================================================================
+
+//------------------------------------------------------------------------------------------------
+// Load required libraries
+//------------------------------------------------------------------------------------------------
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import useSWR from 'swr';
 import Router from 'next/router';
-// import Pagination from '@material-ui/lab/Pagination';
-
-import Layout from '../components/layout';
-import Pagination from '../components/pagination-panel';
+import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'node:constants';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 
+import Layout from '../components/layout';
+import Pagination from '../components/pagination-panel';
 import MapListItem from '../components/maplist-item';
 import options from '../lib/mapsort-options';
-import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'node:constants';
 
-import useSWR from 'swr';
+//------------------------------------------------------------------------------------------------
 
+
+//------------------------------------------------------------------------------------------------
+// Initiation of values and constants
+//------------------------------------------------------------------------------------------------
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
 const useStyles = makeStyles((theme) => ({
@@ -30,11 +52,15 @@ const useStyles = makeStyles((theme) => ({
 
 const loadingContext = React.createContext(false);
 
+//------------------------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------------------------
+// Get Server Side Properties Function
+//------------------------------------------------------------------------------------------------
 export const getServerSideProps = withPageAuthRequired({
   async getServerSideProps(context) {
     const apiRoot = process.env.SCAN_API_ROOT;
-    // console.log(context);
-
     const q = context.query.q;
 
     if (q) {
@@ -42,22 +68,18 @@ export const getServerSideProps = withPageAuthRequired({
       const { sort, order } = context.query;
       const o = order == 'asc' ? '' : '-';
       const page = context.query.page || 1;
-      // console.log(searchTarget);
-
       let response = null;
 
       if (searchTarget === 'atoms') {
         const url = encodeURI(
           `${apiRoot}/maps?size=10&atoms=${q}&sort=${o}${sort}&page=${page}`
         );
-        console.log(url);
 
         response = await fetch(url);
       } else if (searchTarget === 'smiles') {
         const url = `${apiRoot}/maps?size=10&smiles=${encodeURIComponent(
           q.toString()
         )}&page=${page}`;
-        console.log(url);
 
         response = await fetch(url);
       }
@@ -77,23 +99,22 @@ export const getServerSideProps = withPageAuthRequired({
     }
 
     return {
-      props: {
-        // searchResults: null,
-      },
+      props: {},
     };
   },
 });
+//------------------------------------------------------------------------------------------------
 
+
+//------------------------------------------------------------------------------------------------
+// Map Search Page
+//------------------------------------------------------------------------------------------------
 const MapSearch = ({ searchResults, q, searchTarget, sort, order, page }) => {
-  console.log('props:', q, searchTarget, sort, order, page);
-  // const [searchResults, setSearchResults] = useState(null);
-
   const { user, error, isLoading } = useUser();
   const router = useRouter();
   const classes = useStyles();
 
   const [isWaitingResults, setIsWaitingResults] = useState<Boolean>(false);
-  console.log(loadingContext);
 
   useEffect(() => {
     const handleStart = (url) => setIsWaitingResults(true);
@@ -112,10 +133,6 @@ const MapSearch = ({ searchResults, q, searchTarget, sort, order, page }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    console.log('submit');
-    console.log(e.target.q.value);
-    console.log(e.target['search-target'].value);
 
     let q = e.target.q.value;
 
@@ -138,14 +155,7 @@ const MapSearch = ({ searchResults, q, searchTarget, sort, order, page }) => {
         },
       },
       null
-      // { shallow: true }
     );
-
-    // console.log(isWaitingResults);
-    // setIsWaitingResults(true);
-    // delegate serverside
-
-    console.log('end.');
   };
 
   let totalPages = 0;
@@ -156,13 +166,9 @@ const MapSearch = ({ searchResults, q, searchTarget, sort, order, page }) => {
   if (searchResults) {
     // calculate pagination params
     totalPages = Math.ceil(searchResults.total / searchResults.size);
-
     start = (searchResults.page - 1) * searchResults.size + 1;
     end = searchResults.page * searchResults.size;
-
     all = searchResults.total;
-
-    console.log('totalPages:', totalPages);
   }
 
   return (
@@ -191,12 +197,6 @@ const MapSearch = ({ searchResults, q, searchTarget, sort, order, page }) => {
             >
               <div className="-mx-3 md:flex mb-2">
                 <div className="md:w-full px-3">
-                  {/* <label
-                    htmlFor="q"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Atoms
-                  </label> */}
                   <div className="mt-1 relative rounded-md shadow-sm">
                     <input
                       type="text"
@@ -217,7 +217,6 @@ const MapSearch = ({ searchResults, q, searchTarget, sort, order, page }) => {
                         defaultValue={searchTarget}
                       >
                         <option>atoms</option>
-                        {/* <option>smiles</option> */}
                       </select>
                     </div>
                   </div>
@@ -283,7 +282,6 @@ const MapSearch = ({ searchResults, q, searchTarget, sort, order, page }) => {
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
-                  // height: '100vh',
                 }}
               >
                 <CircularProgress></CircularProgress>
@@ -297,7 +295,6 @@ const MapSearch = ({ searchResults, q, searchTarget, sort, order, page }) => {
                     <h4>Results: {searchResults.total} map found.</h4>
                     {searchResults.items.map((item) => (
                       <div key={item.id}>
-                        {/* {item.id} */}
                         <MapListItem item={item}></MapListItem>
                       </div>
                     ))}
@@ -320,14 +317,13 @@ const MapSearch = ({ searchResults, q, searchTarget, sort, order, page }) => {
       )}
 
       <Backdrop
-        // className={classes.backdrop}
         open={false}
-        // onClick={handleClose}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
     </Layout>
   );
 };
+//------------------------------------------------------------------------------------------------
 
 export default MapSearch;
