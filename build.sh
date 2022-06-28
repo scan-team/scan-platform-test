@@ -1,3 +1,4 @@
+#!/bin/sh
 docker build ./scan-mariadb/docker/db -t scan-mariadb
 docker build ./scan_api_internal -t scan_api_internal
 docker build ./scan_api_public -t scan_api_public 
