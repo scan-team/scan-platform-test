@@ -106,6 +106,10 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
 
   const [tempOptions, setTempOptions] = useState([300]);
   const [tempIndex, setTempIndex] = useState(0);
+  
+  const [shortestPathParams, setShortestPathParams] = useState([-1, -1]);
+
+  const [serverResult, setServerResult] = useState("No Reply Yet");
 
   const r = useRef();
   const g = useRef();
@@ -116,7 +120,18 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
   useEffect(() => {    
     setIsWaitingResults(true);
 
-    const handleNodeClick = (node) => {
+    
+    const getShortestPath = async (ctx) => {
+      const url = encodeURI(`${apiRoot}/shortest_path/${ctx[0]}/${ctx[1]}`);
+      const response = await fetch(url);        
+      const newData = await response.json();
+
+      
+      return setServerResult(JSON.stringify(newData));
+    };
+
+
+    const handleNodeDblClick = (node) => {
       window.open('/eqs/' + node.id);
     };
 
@@ -135,10 +150,35 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
       setOpen((prev) => false);
     };
 
+    // *** WTF ***
+    const handleNodeSnglClick = (node, event) => {
+      if(event.ctrlKey){
+        event.preventDefault();
+        console.warn(node);
+
+        let spp = shortestPathParams;
+        if(spp[0] == -1){
+          spp[0] = node.id;
+        }
+        else{
+          spp[1] = node.id;
+        }
+
+        setShortestPathParams(spp);
+        if(spp[1] !== -1){
+          getShortestPath(spp);
+        }
+      }      
+    };
+
+
     const readData = async () => {
       let mapUrl = `${apiRoot}/maps/${mapId}`;
       const map = await d3.json(mapUrl);
       const data = await d3.csv(graphUrl);
+
+      // *** WTF ***
+      console.warn(data);
 
       clearChildNodes(container.current);
 
@@ -251,9 +291,10 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
       });
       
       const events = Viva.Graph.webglInputEvents(graphics.current, graph);
-      events.dblClick(handleNodeClick);
+      events.dblClick(handleNodeDblClick);
       events.mouseEnter(handleMouseEnter);
       events.mouseLeave(handleMouseLeave);
+      events.mouseDown(handleNodeSnglClick)
 
       const renderer = Viva.Graph.View.renderer(graph, {
         layout: layout,
@@ -309,7 +350,7 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
     const rect = e.target.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    setPopupOffset(`${x + 3},${-(y + 3)}`);
+    setPopupOffset(`${x + 5},${-(y + 5)}`);
   };
 
   return (
@@ -361,6 +402,18 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
           onClick={onClick}
           value={pinnedRef.current ? 'RESUME' : 'STOP'}
         ></input>
+        
+        {/* *** WTF *** */}
+        <span style={{            
+            marginLeft: "20px"
+          }}>{shortestPathParams}
+        </span>
+        <span style={{            
+            marginLeft: "20px"
+          }}>{serverResult}
+        </span>
+        
+
       </div>
 
       {isWaitingResults && (

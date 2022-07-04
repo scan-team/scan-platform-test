@@ -21,7 +21,7 @@
 from fastapi.responses import PlainTextResponse
 from typing import Any, List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Header, Request
-from fastapi_pagination import add_pagination
+from fastapi_pagination import add_pagination, response
 from fastapi_pagination.ext.sqlalchemy import paginate as sql_paginate
 from fastapi_pagination.paginator import paginate as paginate_list
 from fastapi_limiter.depends import RateLimiter
@@ -39,7 +39,7 @@ from service.database import session
 from grrm import models
 from fastapi_pagination import Page, add_pagination, paginate
 from .helpers import MapPage, ItemsPage
-from .utils import get_structure, get_graph
+from .utils import get_structure #, get_graph
 
 # -------------------------------------------------------------------------------------------------
 
@@ -50,6 +50,39 @@ from .utils import get_structure, get_graph
 router = APIRouter()
 
 # -------------------------------------------------------------------------------------------------
+
+
+
+#WTF
+# -------------------------------------------------------------------------------------------------
+# Router Get Features
+# -------------------------------------------------------------------------------------------------
+@router.get(
+    "/shortest_path/{rest_of_path:path}",
+)
+async def get_feats(    
+    rest_of_path: str,
+    db: Session = Depends(session)
+):
+    retRes = {}
+
+    response = rest_of_path
+    # response = Database.get_shortest_path(db, inData1, inData2)
+
+    if response:
+        return response
+
+    # if whatFeat == "GetShortestPath":
+    #     retRes = get_shortest_path([inData1, inData2])
+    # elif whatFeat == "gse":
+    #     retRes = get_something_else(inData)
+
+    # return retRes
+# -------------------------------------------------------------------------------------------------
+
+
+
+
 
 
 # -------------------------------------------------------------------------------------------------
