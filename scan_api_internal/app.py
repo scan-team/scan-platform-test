@@ -14,7 +14,8 @@
 #             and internal grrm support-functions
 # =================================================================================================
 
-print("This is scan-api-internal Entrance Point", flush=True) # TODO: Remove before publish
+# TODO: Remove before publish
+print("This is scan-api-internal Entrance Point", flush=True) 
 
 # -------------------------------------------------------------------------------------------------
 # Load required libraries

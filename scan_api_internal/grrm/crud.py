@@ -349,4 +349,57 @@ class Database:
         id = ulid.parse(pnode_id)
         return db.query(models.PNode).filter(models.PNode.id == id).first()
 
+    
+    @staticmethod
+    def get_shortest_path(
+        db: Session,
+        start_Node_id: int,
+        end_Node_id: int,
+    ):
+        """
+        Get Shortest Path
+        :param db: SQLAlchemy Session
+        :param start_Node_id: scan db graph start node id
+        :param end_Node_id: scan db graph end node id
+        :return: List of Node IDs (including start and end)
+        """
+
+        # import openbabel as ob
+        # from openbabel import pybel
+        # import pandas as pd
+        # import ulid
+        # import numpy as np
+        # from scipy.constants import constants as cc
+        # from scipy.constants import physical_constants as pc
+        # from sqlalchemy import func
+        # from .models import GRRMMap, Eq, Edge
+        # -------------------------------------------------------------------------------------------------
+        # from matplotlib import pyplot as plt
+        # import networkx as nx
+        # import csv
+
+    
+
+        # df = pd.read_csv('networkdata.csv')
+        # df.head()
+        # g = nx.from_pandas_edgelist(df, source='initial', target='final')
+        # path = nx.shortest_path(g,source=14,target=16)
+        # print (path)
+
+
+
+
+
+        # id = ulid.parse(edge_id)
+        # edge = db.query(models.Edge).filter(models.Edge.id == id).first()
+
+        pathnodes = [start_Node_id, 2,4,6,8, end_Node_id]
+
+        # for p_id_str in edge.pathdata:
+        #     p_id = ulid.parse(p_id_str)
+        #     p_node = db.query(models.PNode).filter(models.PNode.id == p_id).first()
+        #     if p_node:
+        #         pathnodes.append(p_node)
+
+        return pathnodes
 # -------------------------------------------------------------------------------------------------

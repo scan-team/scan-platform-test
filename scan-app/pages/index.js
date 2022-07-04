@@ -31,7 +31,6 @@ import Layout from '../components/layout';
 export const getServerSideProps = async (context) => {
   const apiRoot = process.env.SCAN_API_ROOT;
   const url = encodeURI(`${apiRoot}/stats`);
-  //console.log(url);
 
   const response = await fetch(url);
   let atoms = null;
@@ -42,7 +41,6 @@ export const getServerSideProps = async (context) => {
     },
   };
 };
-
 //------------------------------------------------------------------------------------------------
 
 
