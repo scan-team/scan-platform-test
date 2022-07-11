@@ -45,7 +45,7 @@ services:
       - scan-network
 
   api_internal:
-    image: scan_api_internal
+    image: scan_api_internal-dev
     container_name: scan_api_internal
     env_file: .env
     ports:
@@ -61,7 +61,7 @@ services:
       - scan-network  
         
   api_public:
-    image: scan_api_public
+    image: scan_api_public-dev
     container_name: scan_api_public
     env_file: .env
     ports:
@@ -79,7 +79,7 @@ services:
     user: '${USERID}:${GROUPID}'
 
   app:
-    image: scan-app
+    image: scan-app-dev
     env_file: .env
     container_name: scan_app
     ports:
