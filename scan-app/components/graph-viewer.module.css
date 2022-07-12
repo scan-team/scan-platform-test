@@ -5,14 +5,20 @@
 // Authors: Jun Fujima (Former Lead Developer) [2021]
 //          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
 //________________________________________________________________________________________________
-// Description: This is a CSS style module for the Date component (in date.js)
+// Description: This is a CSS style module for the graph-viewer component (in date.js)
 //------------------------------------------------------------------------------------------------
 // Notes: 
 //------------------------------------------------------------------------------------------------
 // References: 
 //==============================================================================================*/
 
-.container {
-  font-size: small;
-  color: rgb(161, 159, 157);
-}
+
+.nodeLabel {
+    position: absolute;
+    color: rgb(253, 248, 221);
+    font-size: 0.8em;
+    font-weight: bold;
+    text-shadow: 1px 1px black;
+    pointer-events: none;
+  }
+  
