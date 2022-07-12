@@ -27,7 +27,9 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Popper from '@material-ui/core/Popper';
 import MolViewer from './mol-viewer-cd-3d';
 
-//------------------------------------------------------------------------------------------------
+import styles from './graph-viewer.module.css';
+
+//----------------------------------------------
 
 
 //------------------------------------------------------------------------------------------------
@@ -51,6 +53,18 @@ const stylePack = {
   overflow: 'hidden',
 };
 
+const graphStyles = {
+  nodeDefault: 10,
+  nodeSelected: 20,
+  selectedNodeColor: Viva.Graph.View._webglUtil.parseColor("#FFFF00"),
+  lineDefaultColor: Viva.Graph.View._webglUtil.parseColor("#999999")
+}
+
+// let lastSelectIndex = 0;
+let selectedPath = [];
+let spMemData = [];
+var spEdgeMem = [];
+let domLabels = {};
 //------------------------------------------------------------------------------------------------
 
 
@@ -70,18 +84,18 @@ const clearChildNodes = function (container) {
 // Generate DOM Labels
 // This will map node id into DOM element
 //------------------------------------------------------------------------------------------------
-function generateDOMLabels(graph, container, labeledNodes) {  
-  const labels = Object.create(null);
-  graph.forEachNode(function (node) {
-    if (labeledNodes.includes(node.id)) {
+function generateDOMLabels(graph, container, labeledNodes) {   
+  const labels = Object.create(null);  
+  graph.forEachNode(function (node) {    
+    if (labeledNodes.includes(node.id)) {      
       const label = document.createElement('span');
-      label.classList.add('node-label');
-      label.innerText = node.id;
-      labels[node.id] = label;
+      label.classList.add(styles.nodeLabel);
+      // label.innerText = node.id;
+      labels[node.id] = label;      
       container.appendChild(label);
     }
   });
-  
+
   return labels;
 }
 
@@ -89,9 +103,103 @@ function generateDOMLabels(graph, container, labeledNodes) {
 
 
 //------------------------------------------------------------------------------------------------
+// Get Shortest Path
+// This will contact the server for calculating the shortest path between two nodes and return it
+//------------------------------------------------------------------------------------------------
+const getShortestPath = async (ctx, graphics, graph, container) => {
+  const url = encodeURI(`${apiRoot}/shortest_path/${ctx[0]}/${ctx[1]}/${ctx[2]}`);
+
+  const response = await fetch(url);        
+  const spData = await response.json();
+  
+  domLabels = generateDOMLabels(        
+    graph.current,
+    container.current,
+    spData
+  );  
+  
+  spEdgeMem = [];
+  var indexLabelTxt = 1; 
+  spData.forEach((n, index) => {
+    var nUI = graphics.current.getNodeUI(n);
+    spMemData.push([n, nUI.color, nUI.size, index+1])
+    nUI.color = Viva.Graph.View._webglUtil.parseColor("#FF00FF");
+    nUI.size = 20;
+    domLabels[n].innerText = indexLabelTxt++; 
+    
+    var thisNode = graph.current.getNode(n);
+    for (let i = 0; i < thisNode.links.length; i++) {
+      for (let j = 0; j < spData.length; j++) {
+        if((n == thisNode.links[i].fromId && spData[j] == thisNode.links[i].toId) || (n == thisNode.links[i].toId && spData[j] == thisNode.links[i].fromId)){
+          var alreadyExist = false;
+          for(let k = 0; k < spEdgeMem.length; k++){
+            if(spEdgeMem[k] == thisNode.links[i].id){
+              alreadyExist = true;
+              break;
+            }
+          }
+          if(!alreadyExist){
+            spEdgeMem.push(thisNode.links[i].id);
+          }
+        }
+      }            
+    }          
+  });        
+  spEdgeMem.forEach((l, index) => {
+    var linkUI = graphics.current.getLinkUI(l);
+    if (linkUI) {        
+      linkUI.color = Viva.Graph.View._webglUtil.parseColor("#ff00ff");
+    }
+  });   
+
+  return;
+};
+//------------------------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------------------------
+// Get Shortest Path
+// This will contact the server for calculating the shortest path between two nodes and return it
+//------------------------------------------------------------------------------------------------
+const resetPathSelection = async (graphics, container, forceReset) => {
+  if(spEdgeMem.length !== 0){
+    spEdgeMem.forEach((l) => {
+      var linkUI = graphics.current.getLinkUI(l);
+      if (linkUI) {        
+        linkUI.color = Viva.Graph.View._webglUtil.parseColor("#999999");
+      }
+    });
+    spEdgeMem = [];
+  }
+
+  if(spMemData.length !== 0){
+    spMemData.forEach((n) => {
+      var nUI = graphics.current.getNodeUI(n[0]);
+      nUI.color = n[1]
+      nUI.size = n[2];
+      container.removeChild(domLabels[n[0]]);
+    });
+    spMemData = [];
+    domLabels = {};
+  }
+
+  if(selectedPath.length == 2 || forceReset){
+    selectedPath.forEach((n) => {
+      var nUI = graphics.current.getNodeUI(n[0]);
+      nUI.color = n[1]
+      nUI.size = n[2];
+    });
+    selectedPath = [];
+  }        
+};
+//------------------------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------------------------
 // Graph Viewer (React) Component
 //------------------------------------------------------------------------------------------------
 const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
+  // highlightedNodes will not have any effect at the moment... if ever used it will be implemnted later
   const container = useRef(null);
   const graphics = useRef(null);
 
@@ -107,10 +215,6 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
   const [tempOptions, setTempOptions] = useState([300]);
   const [tempIndex, setTempIndex] = useState(0);
   
-  const [shortestPathParams, setShortestPathParams] = useState([-1, -1]);
-
-  const [serverResult, setServerResult] = useState("No Reply Yet");
-
   const r = useRef();
   const g = useRef();
   const l = useRef();
@@ -119,23 +223,12 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
 
   useEffect(() => {    
     setIsWaitingResults(true);
-
     
-    const getShortestPath = async (ctx) => {
-      const url = encodeURI(`${apiRoot}/shortest_path/${ctx[0]}/${ctx[1]}`);
-      const response = await fetch(url);        
-      const newData = await response.json();
-
-      
-      return setServerResult(JSON.stringify(newData));
-    };
-
-
     const handleNodeDblClick = (node) => {
       window.open('/eqs/' + node.id);
     };
 
-    const handleMouseEnter = (node) => {
+    const handleMouseEnter = (node, link) => {
       if (pinnedRef.current == false) {
         return;
       }
@@ -146,39 +239,32 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
       window.n = node;
     };
 
-    const handleMouseLeave = (node) => {
-      setOpen((prev) => false);
+    const handleMouseLeave = (node) => {      
+      setOpen((prev) => false);      
     };
-
-    // *** WTF ***
+    
     const handleNodeSnglClick = (node, event) => {
       if(event.ctrlKey){
         event.preventDefault();
-        console.warn(node);
+        
+        resetPathSelection(graphics, container.current);
 
-        let spp = shortestPathParams;
-        if(spp[0] == -1){
-          spp[0] = node.id;
-        }
-        else{
-          spp[1] = node.id;
-        }
+        var nodeUI = graphics.current.getNodeUI(node.id);
+        var thisNode = [node.id, nodeUI.color, nodeUI.size];        
+        selectedPath.push(thisNode);        
+        nodeUI.color = graphStyles.selectedNodeColor
+        nodeUI.size = 20;
 
-        setShortestPathParams(spp);
-        if(spp[1] !== -1){
-          getShortestPath(spp);
+        if(selectedPath.length == 2){
+          getShortestPath(([mapId]).concat([selectedPath[0][0], selectedPath[1][0]]), graphics, g, container);
         }
       }      
     };
 
-
-    const readData = async () => {
+    const readData = async () => {      
       let mapUrl = `${apiRoot}/maps/${mapId}`;
       const map = await d3.json(mapUrl);
       const data = await d3.csv(graphUrl);
-
-      // *** WTF ***
-      console.warn(data);
 
       clearChildNodes(container.current);
 
@@ -190,8 +276,6 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
         gravity: -1.2,
         theta: 1,
       });
-
-      const selectedNodes = [];
 
       data.forEach((d) => {
         if (d['n0'] && d['n1']) {
@@ -225,13 +309,7 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
         graph.addNode(s.eq_id, d);
       });
 
-      graphics.current = Viva.Graph.View.webglGraphics();
-
-      var domLabels = generateDOMLabels(
-        graph,
-        container.current,
-        highlightedNodes
-      );
+      graphics.current = Viva.Graph.View.webglGraphics();       
 
       const mValues = measures.map((m) => {
         if (measure === 'energy') {
@@ -245,30 +323,37 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
         .scaleSequential(d3.interpolateSpectral)
         .domain([Math.max(...mValues), Math.min(...mValues)]);
             
-      graphics.current.node((node) => {
+      graphics.current.node((node) => {    
         if (highlightedNodes.includes(node.id)) {          
-          return Viva.Graph.View.webglSquare(20, 0xff0000ff);
+          return Viva.Graph.View.webglSquare(graphStyles.nodeSelected, graphStyles.selectedNodeColor);
         }
 
         if (measure != 'energy') {
           if (hNodeIds.includes(node.id)) {
             const c = d3.rgb(color(node.data[measure])).formatHex();
-            return Viva.Graph.View.webglSquare(20, c);
+            return Viva.Graph.View.webglSquare(graphStyles.nodeSelected, c);
           } else {
             const c = d3.rgb(color(node.data[measure])).formatHex();
-            return Viva.Graph.View.webglSquare(10, c);
+            return Viva.Graph.View.webglSquare(graphStyles.nodeDefault, c);
           }
         }
 
         if (node.data?.energy) {
           const c = d3.rgb(color(node.data.energy[0])).formatHex();
-          return Viva.Graph.View.webglSquare(10, c);
+          return Viva.Graph.View.webglSquare(graphStyles.nodeDefault, c);
         }
 
-        return Viva.Graph.View.webglSquare(10, 10414335);
+        return Viva.Graph.View.webglSquare(graphStyles.nodeDefault, 10414335);
       });
 
-      graphics.current.placeNode((ui, pos) => {
+      //--- IF DIFFERENT COLOR OF THE EDGES (Lines) ARE REQUESTED --------------------------------
+      // graphics.current.link((link) => {    
+      //   return Viva.Graph.View.webglLine(graphStyles.lineDefaultColor);
+      // });
+      //------------------------------------------------------------------------------------------
+      
+
+      graphics.current.placeNode((ui, pos) => {        
         // This callback is called by the renderer before it updates 
         // node coordinate. We can use it to update corresponding DOM
         // label position;
@@ -282,11 +367,11 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
         graphics.current.transformGraphToClientCoordinates(domPos);
 
         const nodeId = ui.node.id;
-        // then move corresponding dom label to its own position:
-        if (domLabels[nodeId]) {
+        // then move corresponding dom label to its own position:        
+        if (domLabels[nodeId]) {                    
           const labelStyle = domLabels[nodeId].style;
-          labelStyle.left = domPos.x + 'px';
-          labelStyle.top = domPos.y + 'px';
+          labelStyle.left = domPos.x - parseInt((graphStyles.nodeSelected/2)) + 'px';
+          labelStyle.top = domPos.y - parseInt((graphStyles.nodeSelected/2)) + 'px';    
         }
       });
       
@@ -294,7 +379,7 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
       events.dblClick(handleNodeDblClick);
       events.mouseEnter(handleMouseEnter);
       events.mouseLeave(handleMouseLeave);
-      events.mouseDown(handleNodeSnglClick)
+      events.click(handleNodeSnglClick)
 
       const renderer = Viva.Graph.View.renderer(graph, {
         layout: layout,
@@ -326,7 +411,7 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
     setPinned(false);
     setMeasure(e.target.value);
   };
-
+  
   const onClick = (e) => {
     if (pinned) {
       g.current.forEachNode((n) => {
@@ -344,6 +429,10 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
     });
     setPinned(true);
     pinnedRef.current = true;
+  };
+  
+  const onResetRequestClick = (e) => {
+    resetPathSelection(graphics, container.current, true);
   };
 
   const handleMouseMove = (e) => {
@@ -402,18 +491,31 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
           onClick={onClick}
           value={pinnedRef.current ? 'RESUME' : 'STOP'}
         ></input>
-        
-        {/* *** WTF *** */}
-        <span style={{            
-            marginLeft: "20px"
-          }}>{shortestPathParams}
+        <span
+          style={{            
+            marginLeft: "30px",        
+            fontSize: "11px",
+            color: "black",
+          }}
+        >
+          Hold CTRL + mouse-click for Node selection (Shortest Path Calculation)
         </span>
-        <span style={{            
-            marginLeft: "20px"
-          }}>{serverResult}
-        </span>
         
-
+        <input
+          style={{
+            border: 'darkblue solid 1px',
+            marginLeft: "5px",
+            padding: "2px",
+            backgroundColor: "lightblue",
+            fontSize: "11px",
+            color: "dimgray",
+            cursor: "pointer"
+          }}
+          type="button"
+          onClick={onResetRequestClick}
+          value={'RESET SELECTION'}
+          size="sm"
+        ></input>
       </div>
 
       {isWaitingResults && (

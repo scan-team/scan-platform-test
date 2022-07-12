@@ -25,7 +25,26 @@ from sqlalchemy.sql.expression import asc
 from sqlalchemy import distinct
 from sqlalchemy.dialects import mysql
 
+# Shortest Path and other features
+import pandas as pd
+import networkx as nx
+import sys
+import numpy as np
+if sys.version_info[0] < 3: 
+    from StringIO import StringIO
+else:
+    from io import StringIO
+
+# Internal
 from grrm import models
+
+# Unused
+# import openbabel as ob
+# from openbabel import pybel
+
+# from scipy.constants import constants as cc
+# from scipy.constants import physical_constants as pc
+# from matplotlib import pyplot as plt
 
 # -------------------------------------------------------------------------------------------------
 
@@ -353,8 +372,9 @@ class Database:
     @staticmethod
     def get_shortest_path(
         db: Session,
-        start_Node_id: int,
-        end_Node_id: int,
+        map_id: str,
+        start_Node_id: str,
+        end_Node_id: str,
     ):
         """
         Get Shortest Path
@@ -364,42 +384,17 @@ class Database:
         :return: List of Node IDs (including start and end)
         """
 
-        # import openbabel as ob
-        # from openbabel import pybel
-        # import pandas as pd
-        # import ulid
-        # import numpy as np
-        # from scipy.constants import constants as cc
-        # from scipy.constants import physical_constants as pc
-        # from sqlalchemy import func
-        # from .models import GRRMMap, Eq, Edge
-        # -------------------------------------------------------------------------------------------------
-        # from matplotlib import pyplot as plt
-        # import networkx as nx
-        # import csv
+        m_id = ulid.parse(map_id)
+        csv = db.query(models.MapGraph).filter(models.MapGraph.map_id == m_id).first().graph_csv
+        df = pd.read_csv(StringIO(csv), sep=",")    
 
-    
-
-        # df = pd.read_csv('networkdata.csv')
-        # df.head()
-        # g = nx.from_pandas_edgelist(df, source='initial', target='final')
-        # path = nx.shortest_path(g,source=14,target=16)
-        # print (path)
-
-
-
-
-
-        # id = ulid.parse(edge_id)
-        # edge = db.query(models.Edge).filter(models.Edge.id == id).first()
-
-        pathnodes = [start_Node_id, 2,4,6,8, end_Node_id]
-
-        # for p_id_str in edge.pathdata:
-        #     p_id = ulid.parse(p_id_str)
-        #     p_node = db.query(models.PNode).filter(models.PNode.id == p_id).first()
-        #     if p_node:
-        #         pathnodes.append(p_node)
-
-        return pathnodes
+        df['n0'].replace('', np.nan, inplace=True)
+        df.dropna(subset=['n0'], inplace=True)
+        df['n1'].replace('', np.nan, inplace=True)
+        df.dropna(subset=['n1'], inplace=True)
+        
+        G = nx.from_pandas_edgelist(df, source='n0', target='n1')
+        shortest_path_nodes = nx.shortest_path(G, source=start_Node_id, target=end_Node_id)
+                
+        return shortest_path_nodes
 # -------------------------------------------------------------------------------------------------

@@ -64,20 +64,13 @@ async def get_feats(
     rest_of_path: str,
     db: Session = Depends(session)
 ):
-    retRes = {}
-
-    response = rest_of_path
-    # response = Database.get_shortest_path(db, inData1, inData2)
+    inData = rest_of_path.split("/")    
+    response = Database.get_shortest_path(db, inData[0], inData[1], inData[2])
 
     if response:
         return response
-
-    # if whatFeat == "GetShortestPath":
-    #     retRes = get_shortest_path([inData1, inData2])
-    # elif whatFeat == "gse":
-    #     retRes = get_something_else(inData)
-
-    # return retRes
+    else:
+        return "FAIL"
 # -------------------------------------------------------------------------------------------------
 
 
