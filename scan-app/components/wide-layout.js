@@ -42,6 +42,8 @@ const Layout = ({ children }) => (
     <style jsx>{`
       .container {
         margin: 1.5rem auto;
+        max-width: 100%;
+        min-width: 100%;
       }
     `}</style>
     <style jsx global>{`

@@ -52,6 +52,16 @@ export default function GraphViewerPage({ mapData, id }) {
     fetcher
   );
 
+  const useWidth = () => {
+    const [width, setWidth] = useState(0); // default width, detect on server.
+    const handleResize = () => setWidth(window.innerWidth);
+    useEffect(() => {
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }, [handleResize]);
+    return width;
+  };
+
   const properties = [];
   let i = 0;
   const jsonKeys = ['atom_name', 'siml_temperature_kelvin'];
@@ -120,7 +130,7 @@ export default function GraphViewerPage({ mapData, id }) {
   });
 
   return (
-    <Layout>
+    <Layout style={{width: {useWidth}}}>
       <Head>
         <title>Map Graph: {id} - SCAN</title>
       </Head>

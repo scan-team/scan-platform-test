@@ -158,8 +158,8 @@ const getShortestPath = async (ctx, graphics, graph, container) => {
 
 
 //------------------------------------------------------------------------------------------------
-// Get Shortest Path
-// This will contact the server for calculating the shortest path between two nodes and return it
+// Reset Path Selection
+// This will reset the selections of nodes and paths
 //------------------------------------------------------------------------------------------------
 const resetPathSelection = async (graphics, container, forceReset) => {
   if(spEdgeMem.length !== 0){
@@ -177,7 +177,11 @@ const resetPathSelection = async (graphics, container, forceReset) => {
       var nUI = graphics.current.getNodeUI(n[0]);
       nUI.color = n[1]
       nUI.size = n[2];
-      container.removeChild(domLabels[n[0]]);
+      try {
+        container.removeChild(domLabels[n[0]]);  
+      } catch (error) {
+        // Do nothing
+      }      
     });
     spMemData = [];
     domLabels = {};
@@ -408,6 +412,7 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
 
   const coloringOptionChange = (e) => {
     pinnedRef.current = false;
+    resetPathSelection(graphics, container.current, true);
     setPinned(false);
     setMeasure(e.target.value);
   };
