@@ -1,54 +1,47 @@
-# import logging
-from fastapi import logger as fastapi_logger
+# =================================================================================================
+# Project: SCAN - Searching Chemical Actions and Networks
+#          Hokkaido University (2021)
+# ________________________________________________________________________________________________
+# Authors: Jun Fujima (Former Lead Developer) [2021]
+#          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+# ________________________________________________________________________________________________
+# Description: This is the data router for the GRRM (Global Reaction Route Mapping) 
+#              system of the scan-api-public parts of the Scan Platform Project.
+# ------------------------------------------------------------------------------------------------
+# Notes: 
+# ------------------------------------------------------------------------------------------------
+# References: typing, 3rd party fastapi and sqlalchemy, and internal grrm schemas, Database and 
+#             helpers
+# =================================================================================================
 
+
+# -------------------------------------------------------------------------------------------------
+# Load required libraries
+# -------------------------------------------------------------------------------------------------
 from typing import List, Optional
-
 from fastapi import APIRouter, Depends, HTTPException, Header, Request
 from fastapi_pagination import Page
-
-# from fastapi_pagination import pagination_params
 from fastapi_pagination.ext.sqlalchemy import paginate
 from fastapi_pagination.paginator import paginate as paginate_list
 from fastapi_pagination import PaginationParams, using_params
-
 from fastapi_limiter.depends import RateLimiter
-
 from sqlalchemy.orm import Session
 
 from grrm import schemas
 from grrm.crud import Database
 from service.database import session
-
 from .helpers import CustomPaginationParams, ItemsPaginationParams
 
+# -------------------------------------------------------------------------------------------------
+
+
+# -------------------------------------------------------------------------------------------------
+# Global constants and variables
+# -------------------------------------------------------------------------------------------------
 pagination_params = using_params(CustomPaginationParams)
 items_pagination_params = using_params(ItemsPaginationParams)
 
-# logger = logging.getLogger(__name__)
-logger = fastapi_logger.logger
-
-
 router = APIRouter()
-
-
-# @router.get("/")
-# async def index():
-#     return {
-#         "apis": [
-#             "/maps",
-#         ]
-#     }
-
-
-# @router.get("/test")
-# async def test(request: Request):
-#     logger.debug("debug")
-#     logger.info("info")
-#     logger.warn("warn")
-#     logger.error("error")
-#     # logger.error("loglevel=" + logging.getLevelName(logger.getEffectiveLevel()))
-
-#     return request.headers
 
 
 @router.get(

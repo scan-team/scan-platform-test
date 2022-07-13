@@ -1,9 +1,29 @@
 #!/bin/bash
+
+# =================================================================================================
+# Project: SCAN - Searching Chemical Actions and Networks
+#          Hokkaido University (2021)
+# ________________________________________________________________________________________________
+# Authors: Jun Fujima (Former Lead Developer) [2021]
+#          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+# ________________________________________________________________________________________________
+# Description: This is the import.sh bash file that that calls for Dockers internal database 
+#              import script to run.
+# ------------------------------------------------------------------------------------------------
+# Notes: 
+# ------------------------------------------------------------------------------------------------
+# References: 
+# =================================================================================================
+
+
+# Make sure the script exits if anything goes wrong
 set -euxo pipefail
 
+# Pass the current user- and group- id into docker-compose.yml
 export USERID=$(id -u)
 export GROUPID=$(id -g)
 
+# Tells Docker Compose to prepare and run the shell script that imports a selected Database file
 docker cp $1 mysql_host:/export.sql
 
 docker-compose exec db bash -c "chmod 0775 /scripts/import-database.sh"

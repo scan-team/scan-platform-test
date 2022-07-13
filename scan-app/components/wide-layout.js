@@ -1,7 +1,32 @@
+//================================================================================================
+// Project: SCAN - Searching Chemical Actions and Networks
+//                 Hokkaido University (2021)
+//________________________________________________________________________________________________
+// Authors: Jun Fujima (Former Lead Developer) [2021]
+//          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+//________________________________________________________________________________________________
+// Description: This is a wider style wrapper Layout Component that will contain the internal 
+//              header and whatever children component we give it to be inside main area. 
+//              [Next.js React.js]
+//------------------------------------------------------------------------------------------------
+// Notes: 
+//------------------------------------------------------------------------------------------------
+// References: React.js components, head from Next.js, and internal header
+//================================================================================================
+
+//------------------------------------------------------------------------------------------------
+// Load required libraries
+//------------------------------------------------------------------------------------------------
 import React from 'react';
 import Head from 'next/head';
 import Header from './header';
 
+//------------------------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------------------------
+// Layout (wider outer html wrapper) Component
+//------------------------------------------------------------------------------------------------
 const Layout = ({ children }) => (
   <>
     <Head>
@@ -16,7 +41,6 @@ const Layout = ({ children }) => (
 
     <style jsx>{`
       .container {
-        // max-width: 84rem;
         margin: 1.5rem auto;
       }
     `}</style>
@@ -29,5 +53,6 @@ const Layout = ({ children }) => (
     `}</style>
   </>
 );
+//------------------------------------------------------------------------------------------------
 
 export default Layout;

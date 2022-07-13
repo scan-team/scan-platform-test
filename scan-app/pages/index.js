@@ -1,3 +1,20 @@
+//================================================================================================
+// Project: SCAN - Searching Chemical Actions and Networks
+//                 Hokkaido University (2021)
+//________________________________________________________________________________________________
+// Authors: Jun Fujima (Former Lead Developer) [2021]
+//          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+//________________________________________________________________________________________________
+// Description: This is the start index.js file for the scan-app website (using Next).
+//------------------------------------------------------------------------------------------------
+// Notes: 
+//------------------------------------------------------------------------------------------------
+// References: Base-framework Next and internal Layout and styles
+//================================================================================================
+
+//------------------------------------------------------------------------------------------------
+// Load required libraries
+//------------------------------------------------------------------------------------------------
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -5,10 +22,15 @@ import styles from '../styles/Home.module.css';
 
 import Layout from '../components/layout';
 
+//------------------------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------------------------
+// get Server-Side Properties
+//------------------------------------------------------------------------------------------------
 export const getServerSideProps = async (context) => {
   const apiRoot = process.env.SCAN_API_ROOT;
   const url = encodeURI(`${apiRoot}/stats`);
-  console.log(url);
 
   const response = await fetch(url);
   let atoms = null;
@@ -19,9 +41,13 @@ export const getServerSideProps = async (context) => {
     },
   };
 };
+//------------------------------------------------------------------------------------------------
 
+
+//------------------------------------------------------------------------------------------------
+// Home - Site Start
+//------------------------------------------------------------------------------------------------
 export default function Home({ stats }) {
-  console.log(stats);
   return (
     <Layout>
       <div className={styles.container}>
@@ -30,19 +56,19 @@ export default function Home({ stats }) {
           <link
             rel="apple-touch-icon"
             sizes="180x180"
-            href="/apple-touch-icon.png"
+            href="/images/apple-touch-icon.png"
           />
           <link
             rel="icon"
             type="image/png"
             sizes="32x32"
-            href="/favicon-32x32.png"
+            href="/images/favicon-32x32.png"
           />
           <link
             rel="icon"
             type="image/png"
             sizes="16x16"
-            href="/favicon-16x16.png"
+            href="/images/favicon-16x16.png"
           />
           <link rel="manifest" href="/site.webmanifest" />
           <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
@@ -51,7 +77,7 @@ export default function Home({ stats }) {
         </Head>
 
         <main className={styles.main}>
-          <Image priority src="/scan.png" width={500} height={401} alt="SCAN" />
+          <Image priority src="/images/scan.png" width={500} height={401} alt="SCAN" />
 
           <h1>Searching Chemical Actions and Networks</h1>
 
@@ -62,7 +88,7 @@ export default function Home({ stats }) {
             </button>
           </Link>
 
-          <h4>Available Resources:</h4>
+          <h4>Available Amazing Resources:</h4>
 
           <ul>
             <li>{stats.maps} maps</li>
@@ -83,3 +109,4 @@ export default function Home({ stats }) {
     </Layout>
   );
 }
+//------------------------------------------------------------------------------------------------

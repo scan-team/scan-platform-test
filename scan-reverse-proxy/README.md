@@ -6,5 +6,5 @@ $ docker-compose up -d --build
 ```
 
 ```shell
-$ docker-compsoe down
+$ docker-compose down
 ```

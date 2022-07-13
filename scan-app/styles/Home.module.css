@@ -1,3 +1,17 @@
+/*================================================================================================
+// Project: SCAN - Searching Chemical Actions and Networks
+//                 Hokkaido University (2021)
+//________________________________________________________________________________________________
+// Authors: Jun Fujima (Former Lead Developer) [2021]
+//          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+//________________________________________________________________________________________________
+// Description: This is the Home.module CSS styles used by the Scan website.
+//------------------------------------------------------------------------------------------------
+// Notes: 
+//------------------------------------------------------------------------------------------------
+// References: 
+//===============================================================================================*/
+
 .container {
   min-height: 100vh;
   padding: 0 0.5rem;
@@ -72,15 +86,6 @@
     Bitstream Vera Sans Mono, Courier New, monospace;
 }
 
-/* .grid {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  max-width: 800px;
-  margin-top: 3rem;
-} */
-
 .card {
   margin: 1rem;
   flex-basis: 45%;
@@ -114,10 +119,3 @@
 .logo {
   height: 1em;
 }
-
-/* @media (max-width: 1800px) {
-  .grid {
-    width: 100%;
-    flex-direction: column;
-  }
-} */

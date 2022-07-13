@@ -1,28 +1,52 @@
+//================================================================================================
+// Project: SCAN - Searching Chemical Actions and Networks
+//                 Hokkaido University (2021)
+//________________________________________________________________________________________________
+// Authors: Jun Fujima (Former Lead Developer) [2021]
+//          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+//________________________________________________________________________________________________
+// Description: This is the EQ (of specific ID) display page.
+//              [Next.js React.js]
+//------------------------------------------------------------------------------------------------
+// Notes: 
+//------------------------------------------------------------------------------------------------
+// References: useref from ReactJS, head and link from NextJS, 3rd partiy libraries: auth0, 
+//             axios, js-file-download and fluentui; and internal: wide-layout and 
+//             mol-viewer-cd-3d components.
+//================================================================================================
+
+//------------------------------------------------------------------------------------------------
+// Load required libraries
+//------------------------------------------------------------------------------------------------
 import { useRef } from 'react';
-import Layout from '../../components/wide-layout';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0';
-
 import axios from 'axios';
 import fileDownload from 'js-file-download';
 import { DefaultButton, PrimaryButton } from '@fluentui/react';
 
-import Date from '../../components/date';
-import utilStyles from '../../styles/utils.module.css';
-
+import Layout from '../../components/wide-layout';
 import MolViewer from '../../components/mol-viewer-cd-3d';
 
+//------------------------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------------------------
+// Initiation of global values
+//------------------------------------------------------------------------------------------------
 const apiProxyRoot = process.env.NEXT_PUBLIC_SCAN_API_PROXY_ROOT;
 const apiRoot = process.env.SCAN_API_ROOT;
 
+//------------------------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------------------------
+// EQ Info Page
+//------------------------------------------------------------------------------------------------
 export default function EqInfo({ eqData, id }) {
   const { user, error, isLoading } = useUser();
-
   const ref = useRef(null);
-
-  console.log(eqData, id);
-
   const properties = [];
   let i = 0;
 
@@ -45,7 +69,6 @@ export default function EqInfo({ eqData, id }) {
     'reactionyield',
   ];
   Object.keys(eqData).forEach((key) => {
-    // if (key === 'energy' || key === 'xyz' || key == 'hess_eigenvalue_au') {
     if (jsonProps.includes(key)) {
       properties.push(
         <div
@@ -137,18 +160,19 @@ export default function EqInfo({ eqData, id }) {
     </Layout>
   );
 }
+//------------------------------------------------------------------------------------------------
 
+
+//------------------------------------------------------------------------------------------------
+// Get Server Side Properties Function
+//------------------------------------------------------------------------------------------------
 export const getServerSideProps = withPageAuthRequired({
   async getServerSideProps(context) {
-    console.log(context);
-
     const id = context.query.id;
 
     if (id) {
       let response = null;
-
       const url = encodeURI(`${apiRoot}/eqs/${id}`);
-      console.log(url);
 
       response = await fetch(url);
 
@@ -167,3 +191,4 @@ export const getServerSideProps = withPageAuthRequired({
     };
   },
 });
+//------------------------------------------------------------------------------------------------

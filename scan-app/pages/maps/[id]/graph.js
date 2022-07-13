@@ -1,20 +1,50 @@
-import { useRef, useState } from 'react';
-import Layout from '../../../components/wide-layout';
+//================================================================================================
+// Project: SCAN - Searching Chemical Actions and Networks
+//                 Hokkaido University (2021)
+//________________________________________________________________________________________________
+// Authors: Jun Fujima (Former Lead Developer) [2021]
+//          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+//________________________________________________________________________________________________
+// Description: This is the graph for a specific Map (of specific ID) display page.
+//              [Next.js React.js]
+//------------------------------------------------------------------------------------------------
+// Notes: 
+//------------------------------------------------------------------------------------------------
+// References: useref from ReactJS; head and link from NextJS, 3rd partiy libraries: auth0, axios, 
+//             js-file-download, and swr; and internal: wide-layout, graph-viewer and 
+//             eqlist-item components.
+//================================================================================================
+
+//------------------------------------------------------------------------------------------------
+// Load required libraries
+//------------------------------------------------------------------------------------------------
+import { useRef } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0';
-
-import { GraphViewer } from '../../../components/graph-viewer';
 import useSWR from 'swr';
 
+import Layout from '../../../components/wide-layout';
+import { GraphViewer } from '../../../components/graph-viewer';
+
+//------------------------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------------------------
+// Initiation of global values
+//------------------------------------------------------------------------------------------------
 const apiProxyRoot = process.env.NEXT_PUBLIC_SCAN_API_PROXY_ROOT;
 const apiRoot = process.env.SCAN_API_ROOT;
-
 const fetcher = (url) => fetch(url).then((r) => r.text());
 
+//------------------------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------------------------
+// Graph Viewer (for specific Map) Page
+//------------------------------------------------------------------------------------------------
 export default function GraphViewerPage({ mapData, id }) {
   const { user, error, isLoading } = useUser();
-
   const ref = useRef(null);
 
   const { data } = useSWR(
@@ -22,11 +52,8 @@ export default function GraphViewerPage({ mapData, id }) {
     fetcher
   );
 
-  console.log(mapData, id);
-
   const properties = [];
   let i = 0;
-
   const jsonKeys = ['atom_name', 'siml_temperature_kelvin'];
   const hiddenKeys = ['fname_top_abs', 'fname_top_rel', 'energyshiftvalue_au'];
 
@@ -93,25 +120,32 @@ export default function GraphViewerPage({ mapData, id }) {
   });
 
   return (
-    <GraphViewer
-      className="w-full h-full"
-      graphUrl={`${apiProxyRoot}/maps/${id}/graph`}
-      mapId={id}
-    ></GraphViewer>
+    <Layout>
+      <Head>
+        <title>Map Graph: {id} - SCAN</title>
+      </Head>
+      <GraphViewer
+        style={{height: "0px", width: "0px", border: "0px" }}
+        className="w-full h-full"
+        graphUrl={`${apiProxyRoot}/maps/${id}/graph`}
+        mapId={id}
+      ></GraphViewer>
+    </Layout>
   );
 }
+//------------------------------------------------------------------------------------------------
 
+
+//------------------------------------------------------------------------------------------------
+// Get Server Side Properties Function
+//------------------------------------------------------------------------------------------------
 export const getServerSideProps = withPageAuthRequired({
   async getServerSideProps(context) {
-    console.log(context);
-
     const id = context.query.id;
 
     if (id) {
       let response = null;
-
       const url = encodeURI(`${apiRoot}/maps/${id}`);
-      console.log(url);
 
       response = await fetch(url);
 
@@ -130,3 +164,4 @@ export const getServerSideProps = withPageAuthRequired({
     };
   },
 });
+//------------------------------------------------------------------------------------------------

@@ -1,4 +1,17 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# =================================================================================================
+# Project: SCAN - Searching Chemical Actions and Networks
+#          Hokkaido University (2021)
+# ________________________________________________________________________________________________
+# Authors: Jun Fujima (Former Lead Developer) [2021]
+#          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+# ________________________________________________________________________________________________
+# Description: This is the .gitignore file that tells the projects which files the scan-app part 
+#              of the project does not want to be included when pushing project files to GitHub.
+# ------------------------------------------------------------------------------------------------
+# Notes: 
+# ------------------------------------------------------------------------------------------------
+# References: 
+# =================================================================================================
 
 # dependencies
 /node_modules

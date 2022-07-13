@@ -1,65 +1,97 @@
-# import logging
-from fastapi import logger as fastapi_logger
+# =================================================================================================
+# Project: SCAN - Searching Chemical Actions and Networks
+#          Hokkaido University (2021)
+# ________________________________________________________________________________________________
+# Authors: Jun Fujima (Former Lead Developer) [2021]
+#          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+# ________________________________________________________________________________________________
+# Description: This is the data router for the GRRM (Global Reaction Route Mapping) 
+#              system of the scan-api-internal parts of the Scan Platform Project.
+# ------------------------------------------------------------------------------------------------
+# Notes: 
+# ------------------------------------------------------------------------------------------------
+# References: ulid, io, typing and 3rd party pandas, fastapi, networkx, sqlalchemy and 
+# #           internal grrm schemas, crud, and models as well as helpers and utils
+# =================================================================================================
+
+
+# -------------------------------------------------------------------------------------------------
+# Load required libraries
+# -------------------------------------------------------------------------------------------------
 from fastapi.responses import PlainTextResponse
-
 from typing import Any, List, Optional
-
 from fastapi import APIRouter, Depends, HTTPException, Header, Request
-from fastapi_pagination import add_pagination
-
+from fastapi_pagination import add_pagination, response
 from fastapi_pagination.ext.sqlalchemy import paginate as sql_paginate
-
-# from fastapi_pagination.ext.databases import paginate as sql_paginate
-
 from fastapi_pagination.paginator import paginate as paginate_list
-
 from fastapi_limiter.depends import RateLimiter
 from networkx.algorithms import cycles
-
 from sqlalchemy.orm import Session
-
 import ulid
 import pandas as pd
 import networkx as nx
 import networkx.algorithms.centrality as nxc
-
 import io
-
 
 from grrm import schemas
 from grrm.crud import Database
 from service.database import session
 from grrm import models
-
 from fastapi_pagination import Page, add_pagination, paginate
 from .helpers import MapPage, ItemsPage
-from .utils import get_structure, get_graph
+from .utils import get_structure #, get_graph
 
-# pagination_params = using_params(CustomPaginationParams)
-# items_pagination_params = using_params(ItemsPaginationParams)
-
-# logger = logging.getLogger(__name__)
-logger = fastapi_logger.logger
+# -------------------------------------------------------------------------------------------------
 
 
+# -------------------------------------------------------------------------------------------------
+# Global constants and variables
+# -------------------------------------------------------------------------------------------------
 router = APIRouter()
 
-
-# @router.get("/")
-# async def index():
-#     return {
-#         "apis": [
-#             "/maps",
-#         ]
-#     }
+# -------------------------------------------------------------------------------------------------
 
 
+
+#WTF
+# -------------------------------------------------------------------------------------------------
+# Router Get Features
+# -------------------------------------------------------------------------------------------------
+@router.get(
+    "/shortest_path/{rest_of_path:path}",
+)
+async def get_feats(    
+    rest_of_path: str,
+    db: Session = Depends(session)
+):
+    retRes = {}
+
+    response = rest_of_path
+    # response = Database.get_shortest_path(db, inData1, inData2)
+
+    if response:
+        return response
+
+    # if whatFeat == "GetShortestPath":
+    #     retRes = get_shortest_path([inData1, inData2])
+    # elif whatFeat == "gse":
+    #     retRes = get_something_else(inData)
+
+    # return retRes
+# -------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+# -------------------------------------------------------------------------------------------------
+# Router Get Stats
+# -------------------------------------------------------------------------------------------------
 @router.get("/stats")
 async def get_stats(
     db: Session = Depends(session),
 ):
-
-
     maps = Database.get_accessible_maps(db)
     maps_count = maps.count()
 
@@ -74,14 +106,16 @@ async def get_stats(
         "eqs": eqs_count,
         "edges": edges_count,
     }
+# -------------------------------------------------------------------------------------------------
 
 
+# -------------------------------------------------------------------------------------------------
+# Router Get Maps
+# -------------------------------------------------------------------------------------------------
 @router.get(
     "/maps",
     response_model=MapPage[schemas.GRRMMap],
-    dependencies=[
-        # Depends(RateLimiter(times=10, seconds=5)),
-    ],
+    dependencies=[],
 )
 async def get_maps(
     atoms: Optional[str] = None,
@@ -115,12 +149,15 @@ async def get_maps(
         return sql_paginate(maps)
 
     raise HTTPException(status_code=404, detail=f"maps not found")
+# -------------------------------------------------------------------------------------------------
 
 
+# -------------------------------------------------------------------------------------------------
+# Router Get Map by Id
+# -------------------------------------------------------------------------------------------------
 @router.get(
     "/maps/{map_id}",
     response_model=schemas.GRRMMap,
-    # dependencies=[Depends(RateLimiter(times=10, seconds=5))],
 )
 async def get_map(
     map_id: str,
@@ -139,15 +176,16 @@ async def get_map(
     if map:
         return map
     raise HTTPException(status_code=404, detail=f"map not found: {map_id}")
+# -------------------------------------------------------------------------------------------------
 
 
+# -------------------------------------------------------------------------------------------------
+# Router Get Map by Id of Init Structure
+# -------------------------------------------------------------------------------------------------
 @router.get(
     "/maps/{map_id}/init-structure",
     response_class=PlainTextResponse,
-    dependencies=[
-        # Depends(items_pagination_params),
-        # Depends(RateLimiter(times=10, seconds=5)),
-    ],
+    dependencies=[],
 )
 async def get_map_init_structure(
     map_id: str, format: Optional[str] = "xyz", db: Session = Depends(session)
@@ -163,15 +201,16 @@ async def get_map_init_structure(
     raise HTTPException(
         status_code=404, detail=f"Structure is not found on map: {map_id}"
     )
+# -------------------------------------------------------------------------------------------------
 
 
+# -------------------------------------------------------------------------------------------------
+# Router Get Map by Id of n0 Structure
+# -------------------------------------------------------------------------------------------------
 @router.get(
     "/maps/{map_id}/n0-structure",
     response_class=PlainTextResponse,
-    dependencies=[
-        # Depends(items_pagination_params),
-        # Depends(RateLimiter(times=10, seconds=5)),
-    ],
+    dependencies=[],
 )
 async def get_map_n0_structure(
     map_id: str, format: Optional[str] = "xyz", db: Session = Depends(session)
@@ -187,15 +226,16 @@ async def get_map_n0_structure(
     raise HTTPException(
         status_code=404, detail=f"Structure is not found on map: {map_id}"
     )
+# -------------------------------------------------------------------------------------------------
 
 
+# -------------------------------------------------------------------------------------------------
+# Router Get Maps by Id as Graph
+# -------------------------------------------------------------------------------------------------
 @router.get(
     "/maps/{map_id}/graph",
     response_class=PlainTextResponse,
-    dependencies=[
-        # Depends(items_pagination_params),
-        # Depends(RateLimiter(times=10, seconds=5)),
-    ],
+    dependencies=[],
 )
 async def get_map_graph(
     map_id: str, format: Optional[str] = "csv", db: Session = Depends(session)
@@ -208,15 +248,16 @@ async def get_map_graph(
     raise HTTPException(
         status_code=404, detail=f"Structure is not found on map: {map_id}"
     )
+# -------------------------------------------------------------------------------------------------
 
 
+# -------------------------------------------------------------------------------------------------
+# Router Get Map by Id and Eqs
+# -------------------------------------------------------------------------------------------------
 @router.get(
     "/maps/{map_id}/eqs",
     response_model=ItemsPage[schemas.EqAbr],
-    dependencies=[
-        # Depends(items_pagination_params),
-        # Depends(RateLimiter(times=10, seconds=5)),
-    ],
+    dependencies=[],
 )
 async def get_eqs_in_map(
     map_id: str, sort: Optional[str] = None, db: Session = Depends(session)
@@ -232,15 +273,16 @@ async def get_eqs_in_map(
     if eqs:
         return sql_paginate(eqs)
     raise HTTPException(status_code=404, detail=f"Eqs are not found on map: {map_id}")
+# -------------------------------------------------------------------------------------------------
 
 
+# -------------------------------------------------------------------------------------------------
+# Router Get Map by Id, Eqs and Stats
+# -------------------------------------------------------------------------------------------------
 @router.get(
     "/maps/{map_id}/eqs/stats",
     response_model=List[schemas.EqStats],
-    dependencies=[
-        # Depends(items_pagination_params),
-        # Depends(RateLimiter(times=10, seconds=5)),
-    ],
+    dependencies=[],
 )
 async def get_eq_stats_in_map(
     map_id: str,
@@ -249,19 +291,14 @@ async def get_eq_stats_in_map(
     db: Session = Depends(session),
 ):
     eqs = Database.get_eqs(db, map_id, sort)
-    print(eqs.count())
-
     csv = Database.get_graph(db, map_id)
     df = pd.read_csv(io.StringIO(csv), index_col=0)
-
-    #
 
     if eqs:
         eq_list = eqs.all()
         m = 0
 
         if measure:
-
             if measure == "frequency":
                 fs = df["n0"].value_counts()
 
@@ -296,12 +333,15 @@ async def get_eq_stats_in_map(
         return eq_list
 
     raise HTTPException(status_code=404, detail=f"Eqs are not found on map: {map_id}")
+# -------------------------------------------------------------------------------------------------
 
 
+# -------------------------------------------------------------------------------------------------
+# Router Get EQ Measures by EQ Id
+# -------------------------------------------------------------------------------------------------
 @router.get(
     "/eq_measures/{eq_id}",
     response_model=schemas.EqMeasure,
-    # dependencies=[Depends(RateLimiter(times=10, seconds=5))],
 )
 async def get_eq_measure(eq_id: str, db: Session = Depends(session)):
     """
@@ -316,40 +356,34 @@ async def get_eq_measure(eq_id: str, db: Session = Depends(session)):
     if eq:
         return eq
     raise HTTPException(status_code=404, detail=f"eq measure not found: {eq_id}")
+# -------------------------------------------------------------------------------------------------
 
 
-
+# -------------------------------------------------------------------------------------------------
+# Router Get Map by Id, Eqs and Measures
+# -------------------------------------------------------------------------------------------------
 @router.get(
     "/maps/{map_id}/eqs/measures",
     response_model=List[schemas.EqMeasure],
-    dependencies=[
-        # Depends(items_pagination_params),
-        # Depends(RateLimiter(times=10, seconds=5)),
-    ],
+    dependencies=[],
 )
 async def get_eq_measures_in_map(
     map_id: str,
     sort: Optional[str] = None,
     db: Session = Depends(session),
 ):
-
-    print("----")
     eq_measures = Database.get_eq_measures(db, map_id)
 
-    print(eq_measures.count())
-    print(eq_measures.first())
-
-
     return eq_measures.all()
+# -------------------------------------------------------------------------------------------------
 
 
-    raise HTTPException(status_code=404, detail=f"Eqs are not found on map: {map_id}")
-
-
+# -------------------------------------------------------------------------------------------------
+# Router Get EQs by EQ Id
+# -------------------------------------------------------------------------------------------------
 @router.get(
     "/eqs/{eq_id}",
     response_model=schemas.Eq,
-    # dependencies=[Depends(RateLimiter(times=10, seconds=5))],
 )
 async def get_eq(eq_id: str, db: Session = Depends(session)):
     """
@@ -364,15 +398,16 @@ async def get_eq(eq_id: str, db: Session = Depends(session)):
     if eq:
         return eq
     raise HTTPException(status_code=404, detail=f"eq not found: {eq_id}")
+# -------------------------------------------------------------------------------------------------
 
 
+# -------------------------------------------------------------------------------------------------
+# Router Get EQs by EQ Id and Structure
+# -------------------------------------------------------------------------------------------------
 @router.get(
     "/eqs/{eq_id}/structure",
     response_class=PlainTextResponse,
-    dependencies=[
-        # Depends(items_pagination_params),
-        # Depends(RateLimiter(times=10, seconds=5)),
-    ],
+    dependencies=[],
 )
 async def get_eq_structure(
     eq_id: str, format: Optional[str] = "xyz", db: Session = Depends(session)
@@ -386,21 +421,22 @@ async def get_eq_structure(
         return response
 
     raise HTTPException(status_code=404, detail=f"Structure is not found: {eq_id}")
+# -------------------------------------------------------------------------------------------------
 
 
+# -------------------------------------------------------------------------------------------------
+# Router Get Map by Id and Edges
+# -------------------------------------------------------------------------------------------------
 @router.get(
     "/maps/{map_id}/edges",
     response_model=ItemsPage[schemas.EdgeAbr],
-    dependencies=[
-        # Depends(items_pagination_params),
-        # Depends(RateLimiter(times=10, seconds=5)),
-    ],
+    dependencies=[],
 )
 async def get_edges_in_map(
     map_id: str, sort: Optional[str] = None, db: Session = Depends(session)
 ):
     """
-    Find Eqs in the specified map
+    Find Edges in the specified map
     :param db: DB Session
     :return: Maps
     :rtype: JSON or CSV
@@ -410,12 +446,15 @@ async def get_edges_in_map(
     if eqs:
         return sql_paginate(eqs)
     raise HTTPException(status_code=404, detail=f"Edges are not found on map: {map_id}")
+# -------------------------------------------------------------------------------------------------
 
 
+# -------------------------------------------------------------------------------------------------
+# Router Get Edge by Edge Id
+# -------------------------------------------------------------------------------------------------
 @router.get(
     "/edges/{edge_id}",
     response_model=schemas.Edge,
-    # dependencies=[Depends(RateLimiter(times=10, seconds=5))],
 )
 async def get_edge(edge_id: str, db: Session = Depends(session)):
     """
@@ -430,15 +469,16 @@ async def get_edge(edge_id: str, db: Session = Depends(session)):
     if edge:
         return edge
     raise HTTPException(status_code=404, detail=f"edge not found: {edge_id}")
+# -------------------------------------------------------------------------------------------------
 
 
+# -------------------------------------------------------------------------------------------------
+# Router Get Edge by Edge Id and Structure
+# -------------------------------------------------------------------------------------------------
 @router.get(
     "/edges/{edge_id}/structure",
     response_class=PlainTextResponse,
-    dependencies=[
-        # Depends(items_pagination_params),
-        # Depends(RateLimiter(times=10, seconds=5)),
-    ],
+    dependencies=[],
 )
 async def get_edge_structure(
     edge_id: str, format: Optional[str] = "xyz", db: Session = Depends(session)
@@ -452,15 +492,16 @@ async def get_edge_structure(
         return response
 
     raise HTTPException(status_code=404, detail=f"Structure is not found: {edge_id}")
+# -------------------------------------------------------------------------------------------------
 
 
+# -------------------------------------------------------------------------------------------------
+# Router Get Edge by Edge Id and Path-node
+# -------------------------------------------------------------------------------------------------
 @router.get(
     "/edges/{edge_id}/pathnodes",
     response_model=ItemsPage[schemas.PathNodeAbr],
-    dependencies=[
-        # Depends(items_pagination_params),
-        # Depends(RateLimiter(times=10, seconds=5)),
-    ],
+    dependencies=[],
 )
 async def get_pathnodes(edge_id: str, db: Session = Depends(session)):
     """
@@ -475,12 +516,15 @@ async def get_pathnodes(edge_id: str, db: Session = Depends(session)):
     if pathnodes:
         return paginate_list(pathnodes)
     raise HTTPException(status_code=404, detail=f"pathnodes not found on: {edge_id}")
+# -------------------------------------------------------------------------------------------------
 
 
+# -------------------------------------------------------------------------------------------------
+# Router Get Path-node by Path-node Id
+# -------------------------------------------------------------------------------------------------
 @router.get(
     "/pathnodes/{pnode_id}",
     response_model=schemas.PathNode,
-    # dependencies=[Depends(RateLimiter(times=10, seconds=5))],
 )
 async def get_pathnode(pnode_id: str, db: Session = Depends(session)):
     """
@@ -495,15 +539,16 @@ async def get_pathnode(pnode_id: str, db: Session = Depends(session)):
     if pathnode:
         return pathnode
     raise HTTPException(status_code=404, detail=f"pathnode not found: {pnode_id}")
+# -------------------------------------------------------------------------------------------------
 
 
+# -------------------------------------------------------------------------------------------------
+# Router Get Path-node by Path-node Id and Structure
+# -------------------------------------------------------------------------------------------------
 @router.get(
     "/pathnodes/{pnode_id}/structure",
     response_class=PlainTextResponse,
-    dependencies=[
-        # Depends(items_pagination_params),
-        # Depends(RateLimiter(times=10, seconds=5)),
-    ],
+    dependencies=[],
 )
 async def get_pathnode_structure(
     pnode_id: str, format: Optional[str] = "xyz", db: Session = Depends(session)
@@ -517,6 +562,12 @@ async def get_pathnode_structure(
         return response
 
     raise HTTPException(status_code=404, detail=f"Structure is not found: {pnode_id}")
+# -------------------------------------------------------------------------------------------------
 
 
+# -------------------------------------------------------------------------------------------------
+# Give Pagination to the assigned result
+# -------------------------------------------------------------------------------------------------
 add_pagination(router)
+
+# -------------------------------------------------------------------------------------------------

@@ -1,3 +1,22 @@
+# =================================================================================================
+# Project: SCAN - Searching Chemical Actions and Networks
+#          Hokkaido University (2021)
+# ________________________________________________________________________________________________
+# Authors: Jun Fujima (Former Lead Developer) [2021]
+#          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+# ________________________________________________________________________________________________
+# Description: This is the Database Class for the GRRM (Global Reaction Route Mapping) 
+#              system of the scan-api-public parts of the Scan Platform Project.
+# ------------------------------------------------------------------------------------------------
+# Notes: 
+# ------------------------------------------------------------------------------------------------
+# References: ulid, 3rd party sqlalchemy and internal grrm models
+# =================================================================================================
+
+
+# -------------------------------------------------------------------------------------------------
+# Load required libraries
+# -------------------------------------------------------------------------------------------------
 import ulid
 from sqlalchemy import desc, func
 from sqlalchemy.orm import Session
@@ -6,7 +25,12 @@ from sqlalchemy.sql.expression import asc
 
 from grrm import models
 
+# -------------------------------------------------------------------------------------------------
 
+
+# -------------------------------------------------------------------------------------------------
+# Database Class
+# -------------------------------------------------------------------------------------------------
 class Database:
     @staticmethod
     def get_maps(
@@ -29,19 +53,15 @@ class Database:
 
         if len(atoms) > 0:
             atoms_str = str(atoms).replace("'", '"')
-            # q = q.filter(func.json_contains(models.GRRMMap.atom_name, f'["H", "C"]'))
             q = q.filter(func.json_contains(models.GRRMMap.atom_name, f"{atoms_str}"))
 
         if sort:
             sorts = sort.split(",")
-            print(sorts)
             for s in sorts:
                 if s.startswith("-"):
                     q = q.order_by(desc(models.GRRMMap.__dict__[s.lstrip("-")]))
                 else:
                     q = q.order_by(asc(models.GRRMMap.__dict__[s.lstrip("+")]))
-
-        # print(str(q.statement.compile()))
 
         if before:
             q = q.filter(models.GRRMMap.updated_at <= before)
@@ -83,7 +103,6 @@ class Database:
         q = db.query(models.Eq).filter(models.Eq.map == map)
         if sort:
             sorts = sort.split(",")
-            print(sorts)
             for s in sorts:
                 if s.startswith("-"):
                     q = q.order_by(desc(models.Eq.__dict__[s.lstrip("-")]))
@@ -121,7 +140,6 @@ class Database:
         q = db.query(models.Edge).filter(models.Edge.map == map)
         if sort:
             sorts = sort.split(",")
-            print(sorts)
             for s in sorts:
                 if s.startswith("-"):
                     q = q.order_by(desc(models.Edge.__dict__[s.lstrip("-")]))
@@ -175,3 +193,5 @@ class Database:
         """
         id = ulid.parse(pnode_id)
         return db.query(models.PNode).filter(models.PNode.id == id).first()
+
+# -------------------------------------------------------------------------------------------------

@@ -1,30 +1,54 @@
+# =================================================================================================
+# Project: SCAN - Searching Chemical Actions and Networks
+#          Hokkaido University (2021)
+# ________________________________________________________________________________________________
+# Authors: Jun Fujima (Former Lead Developer) [2021]
+#          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+# ________________________________________________________________________________________________
+# Description: This is the Update the EQ Measures Script for the 
+#              scan-api-internal parts of the Scan Platform Project 
+# ------------------------------------------------------------------------------------------------
+# Notes: 
+# ------------------------------------------------------------------------------------------------
+# References: os, sys, io, ulid, dotenv, 3rd party pandas, networkx, openbabel, tqdm
+#             and internal grrm support-functions models and utils
+# =================================================================================================
+
+# -------------------------------------------------------------------------------------------------
+# Load required libraries
+# -------------------------------------------------------------------------------------------------
 import os
 import sys
-import datetime
 import io
-
 import ulid
 import pandas as pd
 import networkx as nx
 import networkx.algorithms.centrality as nxc
 from openbabel import pybel
-
 from tqdm import tqdm
-
-
 from sqlalchemy import orm
 from sqlalchemy.engine import create_engine
 from dotenv import load_dotenv
 
+from grrm.models import Eq, GRRMMap, MapGraph, EQMeasure
+from grrm.utils import get_graph
+
+# -------------------------------------------------------------------------------------------------
+
+
+# -------------------------------------------------------------------------------------------------
+# Global constants and variables + Initiations
+# -------------------------------------------------------------------------------------------------
 load_dotenv()
 
 sys.path += [os.path.dirname(os.path.dirname(__file__))]
 
-
-from grrm.models import Eq, GRRMMap, MapGraph, EQMeasure
-from grrm.utils import get_graph
+# -------------------------------------------------------------------------------------------------
 
 
+# -------------------------------------------------------------------------------------------------
+# Generate and update EQ Measures. (Global)
+# -------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
 
     mysql_host = os.environ["DB_HOST"]
@@ -40,7 +64,6 @@ if __name__ == "__main__":
     session = Session()
 
     maps = session.query(GRRMMap).all()
-    # maps = maps[:20]
 
     for map in tqdm(maps):
 
@@ -57,7 +80,6 @@ if __name__ == "__main__":
         print(str(eqs.count()) + " eqs found.")
 
         csv = map_graph.graph_csv
-        # print(csv)
         df = pd.read_csv(io.StringIO(csv), index_col=0)
 
         eq_list = eqs.all()
@@ -90,10 +112,11 @@ if __name__ == "__main__":
             eqm["eq"] = eq
             eqm["map"] = map
 
-            # print(eqm)
             eqm_obj = EQMeasure(**eqm)
 
             session.add(eqm_obj)
             session.commit()
 
     print("end.")
+
+# -------------------------------------------------------------------------------------------------
