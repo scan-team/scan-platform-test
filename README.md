@@ -28,6 +28,12 @@ This is a monorepo for SCAN Platform. It consists of three main components:
 * scan-reverse-proxy (nginx)
   * Reverse proxy
 
+# git clone submodules
+
+```
+git clone <this repogitory>
+git submodule update --init --recursive
+```
 
 ## Start up the platform
 
