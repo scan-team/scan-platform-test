@@ -4,6 +4,7 @@
 # ________________________________________________________________________________________________
 # Authors: Jun Fujima (Former Lead Developer) [2021]
 #          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+#          NorthGrid (and associates)
 # ________________________________________________________________________________________________
 # Description: This is the docker-compose file for the entire SCAN project that defines all 
 #              services and more that is required in order to run the app.
@@ -103,7 +104,7 @@ services:
       - ./scan-reverse-proxy/root:/usr/local/nginx/html
       - ./scan-reverse-proxy/conf.d:/etc/nginx/conf.d
       - ./scan-reverse-proxy/log:/var/log/nginx/
-      - /etc/ssl/certs:/etc/ssl/certs
+      - /etc/ssl/certs:/etc/ssl/certs # Here is the local SSL Certs path
     depends_on:
       app:
         condition: service_started
