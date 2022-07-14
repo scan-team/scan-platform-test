@@ -393,8 +393,12 @@ class Database:
         df['n1'].replace('', np.nan, inplace=True)
         df.dropna(subset=['n1'], inplace=True)
         
-        G = nx.from_pandas_edgelist(df, source='n0', target='n1')
-        shortest_path_nodes = nx.shortest_path(G, source=start_Node_id, target=end_Node_id)
-                
+        shortest_path_nodes = []
+        try:
+            G = nx.from_pandas_edgelist(df, source='n0', target='n1')
+            shortest_path_nodes = nx.shortest_path(G, source=start_Node_id, target=end_Node_id)
+        except:            
+            print("An exception occurred, probably because one of the nodes are not connected to anything", flush=True)
+                        
         return shortest_path_nodes
 # -------------------------------------------------------------------------------------------------
