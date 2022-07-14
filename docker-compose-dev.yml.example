@@ -1,3 +1,19 @@
+# =================================================================================================
+# Project: SCAN - Searching Chemical Actions and Networks
+#          Hokkaido University (2021)
+# ________________________________________________________________________________________________
+# Authors: Jun Fujima (Former Lead Developer) [2021]
+#          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+#          NorthGrid (and associates)
+# ________________________________________________________________________________________________
+# Description: This is the docker-compose file for the entire SCAN project used during development
+#              that defines all services and more that is required in order to run the app, 
+#              but also updates the website in realtime and speed up all coding.
+# ------------------------------------------------------------------------------------------------
+# Notes: 
+# ------------------------------------------------------------------------------------------------
+# References: 
+# =================================================================================================
 version: '3.5'
 
 services:
@@ -91,6 +107,7 @@ services:
     networks:
       - scan-network
 
+  # make sure the real path of the SSL Certs are correct in the last line under  volumes
   nginx:
     env_file: .env
     container_name: nginx
@@ -103,7 +120,7 @@ services:
       - ./scan-reverse-proxy/root:/usr/local/nginx/html
       - ./scan-reverse-proxy/conf.d:/etc/nginx/conf.d
       - ./scan-reverse-proxy/log:/var/log/nginx/
-      - /etc/ssl/certs:/etc/ssl/certs
+      - /etc/ssl/certs:/etc/ssl/certs # Here is the local SSL Certs path
     depends_on:
       app:
         condition: service_started
