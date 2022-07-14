@@ -27,6 +27,12 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Popper from '@material-ui/core/Popper';
 import MolViewer from './mol-viewer-cd-3d';
 
+
+import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import Modal from '@material-ui/core/Modal';
+
 import styles from './graph-viewer.module.css';
 
 //----------------------------------------------
@@ -59,6 +65,18 @@ const graphStyles = {
   selectedNodeColor: Viva.Graph.View._webglUtil.parseColor("#FFFF00"),
   lineDefaultColor: Viva.Graph.View._webglUtil.parseColor("#999999")
 }
+
+const modalStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
 
 // let lastSelectIndex = 0;
 let selectedPath = [];
@@ -106,51 +124,59 @@ function generateDOMLabels(graph, container, labeledNodes) {
 // Get Shortest Path
 // This will contact the server for calculating the shortest path between two nodes and return it
 //------------------------------------------------------------------------------------------------
-const getShortestPath = async (ctx, graphics, graph, container) => {
+const getShortestPath = async (ctx, graphics, graph, container, sm) => {
   const url = encodeURI(`${apiRoot}/shortest_path/${ctx[0]}/${ctx[1]}/${ctx[2]}`);
 
   const response = await fetch(url);        
   const spData = await response.json();
   
-  domLabels = generateDOMLabels(        
-    graph.current,
-    container.current,
-    spData
-  );  
-  
-  spEdgeMem = [];
-  var indexLabelTxt = 1; 
-  spData.forEach((n, index) => {
-    var nUI = graphics.current.getNodeUI(n);
-    spMemData.push([n, nUI.color, nUI.size, index+1])
-    nUI.color = Viva.Graph.View._webglUtil.parseColor("#FF00FF");
-    nUI.size = 20;
-    domLabels[n].innerText = indexLabelTxt++; 
+  if(spData == "FAIL"){
+    resetPathSelection(graphics, container, true);    
+    sm[0]("Invalid Nodes Selected");
+    sm[1]("An exception occurred, probably because one of the nodes were not connected to anything");
+    sm[2](true);
+  }
+  else{
+    domLabels = generateDOMLabels(        
+      graph.current,
+      container.current,
+      spData
+    );  
     
-    var thisNode = graph.current.getNode(n);
-    for (let i = 0; i < thisNode.links.length; i++) {
-      for (let j = 0; j < spData.length; j++) {
-        if((n == thisNode.links[i].fromId && spData[j] == thisNode.links[i].toId) || (n == thisNode.links[i].toId && spData[j] == thisNode.links[i].fromId)){
-          var alreadyExist = false;
-          for(let k = 0; k < spEdgeMem.length; k++){
-            if(spEdgeMem[k] == thisNode.links[i].id){
-              alreadyExist = true;
-              break;
+    spEdgeMem = [];
+    var indexLabelTxt = 1; 
+    spData.forEach((n, index) => {
+      var nUI = graphics.current.getNodeUI(n);
+      spMemData.push([n, nUI.color, nUI.size, index+1])
+      nUI.color = Viva.Graph.View._webglUtil.parseColor("#FF00FF");
+      nUI.size = 20;
+      domLabels[n].innerText = indexLabelTxt++; 
+      
+      var thisNode = graph.current.getNode(n);
+      for (let i = 0; i < thisNode.links.length; i++) {
+        for (let j = 0; j < spData.length; j++) {
+          if((n == thisNode.links[i].fromId && spData[j] == thisNode.links[i].toId) || (n == thisNode.links[i].toId && spData[j] == thisNode.links[i].fromId)){
+            var alreadyExist = false;
+            for(let k = 0; k < spEdgeMem.length; k++){
+              if(spEdgeMem[k] == thisNode.links[i].id){
+                alreadyExist = true;
+                break;
+              }
+            }
+            if(!alreadyExist){
+              spEdgeMem.push(thisNode.links[i].id);
             }
           }
-          if(!alreadyExist){
-            spEdgeMem.push(thisNode.links[i].id);
-          }
-        }
-      }            
-    }          
-  });        
-  spEdgeMem.forEach((l, index) => {
-    var linkUI = graphics.current.getLinkUI(l);
-    if (linkUI) {        
-      linkUI.color = Viva.Graph.View._webglUtil.parseColor("#ff00ff");
-    }
-  });   
+        }            
+      }          
+    });        
+    spEdgeMem.forEach((l, index) => {
+      var linkUI = graphics.current.getLinkUI(l);
+      if (linkUI) {        
+        linkUI.color = Viva.Graph.View._webglUtil.parseColor("#ff00ff");
+      }
+    });   
+  }
 
   return;
 };
@@ -215,8 +241,6 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
   const [open, setOpen] = useState(false);
   const [targetNode, setTargetNode] = useState({ id: null });
   const [popupOffset, setPopupOffset] = useState('100,0');
-
-  const [tempOptions, setTempOptions] = useState([300]);
   const [tempIndex, setTempIndex] = useState(0);
   
   const r = useRef();
@@ -224,6 +248,11 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
   const l = useRef();
 
   const pinnedRef = useRef(pinned);
+
+  const [openModal, setOpenModal] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
+  const [modalBody, setModalBody] = useState("");
+  const handleCloseModal = () => setOpenModal(false);
 
   useEffect(() => {    
     setIsWaitingResults(true);
@@ -248,9 +277,9 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
     };
     
     const handleNodeSnglClick = (node, event) => {
-      if(event.ctrlKey){
+      if(event.ctrlKey || event.metaKey){
         event.preventDefault();
-        
+
         resetPathSelection(graphics, container.current);
 
         var nodeUI = graphics.current.getNodeUI(node.id);
@@ -260,7 +289,7 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
         nodeUI.size = 20;
 
         if(selectedPath.length == 2){
-          getShortestPath(([mapId]).concat([selectedPath[0][0], selectedPath[1][0]]), graphics, g, container);
+          getShortestPath(([mapId]).concat([selectedPath[0][0], selectedPath[1][0]]), graphics, g, container, [setModalTitle, setModalBody, setOpenModal]);
         }
       }      
     };
@@ -448,7 +477,22 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
   };
 
   return (
-    <div>
+    <div>      
+      <Modal
+        open={openModal}
+        onClose={handleCloseModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={modalStyle}>
+          <Typography id="modal-modal-title" variant="h6" component="h2" style={{fontWeight: 'bold', color: "red", paddingBottom: "10px" }}>
+            {modalTitle}
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            {modalBody}
+          </Typography>
+        </Box>
+      </Modal>
       <Popper
         open={open}
         anchorEl={anchorEl}
@@ -503,7 +547,7 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
             color: "black",
           }}
         >
-          Hold CTRL + mouse-click for Node selection (Shortest Path Calculation)
+          Hold CTRL (or ⌘ on Mac) + mouse-click for Node selection (Shortest Path Calculation)
         </span>
         
         <input
