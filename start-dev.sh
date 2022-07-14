@@ -4,4 +4,4 @@ set -euxo pipefail
 export USERID=$(id -u)
 export GROUPID=$(id -g)
 
-docker-compose -f docker-compose-dev.yml  up -d --build
+docker-compose -f docker-compose-dev.yml up -d

@@ -1,3 +1,4 @@
+FROM scan_api_public-dev
 # =================================================================================================
 # Project: SCAN - Searching Chemical Actions and Networks
 #          Hokkaido University (2021)
@@ -12,20 +13,20 @@
 # References: 
 # =================================================================================================
 
-FROM python:3.8
+# 以下は dev に移動
+# FROM python:3.8
+# LABEL maintainer "jfujima"
+# RUN set -ex \
+#   && apt-get update -y --fix-missing \
+#   && apt-get install -y -q --no-install-recommends \
+#   curl \
+#   file \
+#   && apt-get purge -y --auto-remove
 
-LABEL maintainer "jfujima"
-RUN set -ex \
-  && apt-get update -y --fix-missing \
-  && apt-get install -y -q --no-install-recommends \
-  curl \
-  file \
-  && apt-get purge -y --auto-remove
-
-# install
-RUN pip install pipenv
-ADD Pipfile Pipfile.lock /
-RUN pipenv install --system
+# # install
+# RUN pip install pipenv
+# ADD Pipfile Pipfile.lock /
+# RUN pipenv install --system
 
 # add to application
 ADD app.py /

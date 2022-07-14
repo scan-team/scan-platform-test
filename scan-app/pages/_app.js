@@ -22,11 +22,9 @@ import Head from 'next/head';
 
 import { UserProvider } from '@auth0/nextjs-auth0';
 import NextNprogress from 'nextjs-progressbar';
-import GoogleAnalytics from '../components/GoogleAnalytics';
 
-import usePageView from '../hooks/usePageView';
-import '../styles/globals.css';
 import '../lib/chem-doodle/ChemDoodleWeb.css';
+import { GoogleAnalytics, usePageViews } from 'nextjs-google-analytics';
 
 //------------------------------------------------------------------------------------------------
 
@@ -36,7 +34,7 @@ import '../lib/chem-doodle/ChemDoodleWeb.css';
 //------------------------------------------------------------------------------------------------
 export default function App({ Component, pageProps }) {
   const { user } = pageProps;
-  usePageView();
+  usePageViews();
 
   return (
     <UserProvider user={user}>
