@@ -35,8 +35,8 @@ echo ====================
 echo buiding scan-app
 time docker build $NO_CACHE_OPTION ./scan-app -t scan-app --build-arg NEXT_PUBLIC_SCAN_API_PROXY_ROOT=${NEXT_PUBLIC_SCAN_API_PROXY_ROOT} --build-arg NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=${NEXT_PUBLIC_GOOGLE_ANALYTICS_ID}
 echo ====================
-echo buiding scan_data_observer
-time docker build $NO_CACHE_OPTION_FORCE ./scan_data_observer -t scan_data_observer 
-echo ====================
 echo buiding scan_data_importer
 time docker build $NO_CACHE_OPTION_FORCE ./scan_data_observer/scan_data_importer -t scan_data_importer
+echo ====================
+echo buiding scan_data_observer
+time docker build $NO_CACHE_OPTION_FORCE ./scan_data_observer -t scan_data_observer 
