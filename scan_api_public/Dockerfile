@@ -11,21 +11,8 @@
 # ------------------------------------------------------------------------------------------------
 # References: 
 # =================================================================================================
-
-FROM python:3.8
-
+FROM scan_api_public-dev
 LABEL maintainer "jfujima"
-RUN set -ex \
-  && apt-get update -y --fix-missing \
-  && apt-get install -y -q --no-install-recommends \
-  curl \
-  file \
-  && apt-get purge -y --auto-remove
-
-# install
-RUN pip install pipenv
-ADD Pipfile Pipfile.lock /
-RUN pipenv install --system
 
 # add to application
 ADD app.py /

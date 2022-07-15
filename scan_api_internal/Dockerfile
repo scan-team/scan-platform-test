@@ -12,38 +12,8 @@
 # References: 
 # =================================================================================================
 
-FROM condaforge/miniforge3
-
+FROM scan_api_internal-dev
 LABEL maintainer "jfujima"
-RUN set -ex \
-  && apt-get update -y --fix-missing \
-  && apt-get install -y -q --no-install-recommends \
-  curl \
-  file \
-  && apt-get purge -y --auto-remove
-
-WORKDIR /var/app/scan_api_internal
-
-# install poetry
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py | python -
-ENV PATH /root/.local/bin:$PATH
-
-ENV PATH /opt/miniconda3/bin:$PATH
-
-# create conda env
-COPY env.yaml ./
-RUN conda env create -f env.yaml
-SHELL ["conda", "run", "-n", "scan-env", "/bin/bash", "-c"]
-
-# FOR interactive shell
-RUN echo "source activate scan-env" >> ~/.bashrc
-
-# install dependencies
-COPY poetry.toml poetry.lock pyproject.toml ./
-RUN poetry install
-
-RUN conda env list
-RUN conda list
 
 # add to application
 COPY app.py ./
