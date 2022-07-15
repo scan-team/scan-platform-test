@@ -23,6 +23,7 @@ import Head from 'next/head';
 import { UserProvider } from '@auth0/nextjs-auth0';
 import NextNprogress from 'nextjs-progressbar';
 
+import '../styles/globals.css';
 import '../lib/chem-doodle/ChemDoodleWeb.css';
 
 import { GoogleAnalytics, usePageViews } from 'nextjs-google-analytics';
