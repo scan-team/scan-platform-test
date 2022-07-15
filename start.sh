@@ -23,7 +23,10 @@ set -euxo pipefail
 export USERID=$(id -u)
 export GROUPID=$(id -g)
 
-./build.sh
+
+if test -f "build.sh"; then
+    ./build.sh
+fi
 
 # Call Docker Compose and ask it to build and activate all related docker containers
-docker-compose up -d --build
+docker-compose up -d 
