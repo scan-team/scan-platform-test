@@ -25,6 +25,7 @@
     "kekule": "https://github.com/partridgejiang/Kekule.js",
     "next": "^11.0.1",
     "next-http-proxy-middleware": "^1.1.1",
+    "nextjs-google-analytics": "^1.2.1",
     "nextjs-progressbar": "^0.0.11",
     "nprogress": "^0.2.0",
     "raw-loader": "^4.0.2",

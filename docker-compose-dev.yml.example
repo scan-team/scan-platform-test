@@ -1,9 +1,25 @@
+# =================================================================================================
+# Project: SCAN - Searching Chemical Actions and Networks
+#          Hokkaido University (2021)
+# ________________________________________________________________________________________________
+# Authors: Jun Fujima (Former Lead Developer) [2021]
+#          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+#          NorthGrid (and associates)
+# ________________________________________________________________________________________________
+# Description: This is the docker-compose file for the entire SCAN project used during development
+#              that defines all services and more that is required in order to run the app, 
+#              but also updates the website in realtime and speed up all coding.
+# ------------------------------------------------------------------------------------------------
+# Notes: 
+# ------------------------------------------------------------------------------------------------
+# References: 
+# =================================================================================================
 version: '3.5'
 
 services:
   # MySQL
   db:
-    build: ./scan-mariadb/docker/db
+    image: scan-mariadb
     container_name: mysql_host
     env_file:
       - .env
@@ -45,10 +61,7 @@ services:
       - scan-network
 
   api_internal:
-    build:
-      context: ./scan_api_internal
-      dockerfile: ./Dockerfile-dev
-    image: jfujima/scan/api_internal
+    image: scan_api_internal-dev
     container_name: scan_api_internal
     env_file: .env
     ports:
@@ -64,10 +77,7 @@ services:
       - scan-network  
         
   api_public:
-    build:
-      context: ./scan_api_public
-      dockerfile: ./Dockerfile-dev
-    image: jfujima/scan/api_public
+    image: scan_api_public-dev
     container_name: scan_api_public
     env_file: .env
     ports:
@@ -85,13 +95,7 @@ services:
     user: '${USERID}:${GROUPID}'
 
   app:
-    build:
-      context: ./scan-app
-      dockerfile: ./Dockerfile-dev
-      args:
-        - NEXT_PUBLIC_SCAN_API_PROXY_ROOT=${NEXT_PUBLIC_SCAN_API_PROXY_ROOT}
-        - NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=${NEXT_PUBLIC_GOOGLE_ANALYTICS_ID}
-    image: jfujima/scan/app
+    image: scan-app-dev
     env_file: .env
     container_name: scan_app
     ports:
@@ -103,6 +107,7 @@ services:
     networks:
       - scan-network
 
+  # make sure the real path of the SSL Certs are correct in the last line under  volumes
   nginx:
     env_file: .env
     container_name: nginx
@@ -115,7 +120,7 @@ services:
       - ./scan-reverse-proxy/root:/usr/local/nginx/html
       - ./scan-reverse-proxy/conf.d:/etc/nginx/conf.d
       - ./scan-reverse-proxy/log:/var/log/nginx/
-      - /etc/ssl/certs:/etc/ssl/certs
+      - /etc/ssl/certs:/etc/ssl/certs # Here is the local SSL Certs path
     depends_on:
       app:
         condition: service_started
