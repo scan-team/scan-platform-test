@@ -28,6 +28,9 @@ import '../lib/chem-doodle/ChemDoodleWeb.css';
 
 import { GoogleAnalytics, usePageViews } from 'nextjs-google-analytics';
 
+import getConfig from "next/config"
+const { publicRuntimeConfig } = getConfig()
+
 export default function App({ Component, pageProps }) {
   const { user } = pageProps;
   usePageViews();
@@ -44,7 +47,7 @@ export default function App({ Component, pageProps }) {
         height={3}
         showOnShallow={true}
       />
-      <GoogleAnalytics />
+      <GoogleAnalytics gaMeasurementId={ publicRuntimeConfig.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID } />
       <Component {...pageProps} />
     </UserProvider>
   );

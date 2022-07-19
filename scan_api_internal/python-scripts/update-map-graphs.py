@@ -27,6 +27,8 @@ from sqlalchemy import orm
 from sqlalchemy.engine import create_engine
 from dotenv import load_dotenv
 
+sys.path += [os.path.dirname(os.path.dirname(__file__))]
+
 from grrm.models import GRRMMap, MapGraph
 from grrm.utils import get_graph
 
@@ -37,8 +39,6 @@ from grrm.utils import get_graph
 # Global constants and variables + Initiations
 # -------------------------------------------------------------------------------------------------
 load_dotenv()
-
-sys.path += [os.path.dirname(os.path.dirname(__file__))]
 
 # -------------------------------------------------------------------------------------------------
 

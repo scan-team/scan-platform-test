@@ -35,6 +35,9 @@ import Pagination from '../components/pagination-panel';
 import MapListItem from '../components/maplist-item';
 import options from '../lib/mapsort-options';
 
+import getConfig from 'next/config';
+const { publicRuntimeConfig } = getConfig()
+
 //------------------------------------------------------------------------------------------------
 
 
@@ -60,7 +63,7 @@ const loadingContext = React.createContext(false);
 //------------------------------------------------------------------------------------------------
 export const getServerSideProps = withPageAuthRequired({
   async getServerSideProps(context) {
-    const apiRoot = process.env.SCAN_API_ROOT;
+    const apiRoot = publicRuntimeConfig.SCAN_API_ROOT;
     const q = context.query.q;
 
     if (q) {

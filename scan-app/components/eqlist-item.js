@@ -23,13 +23,16 @@ import Date from './date';
 import MolViewerSmall from './mol-viewer-cd';
 import useSWR from 'swr';
 
+import getConfig from "next/config"
+const { publicRuntimeConfig } = getConfig()
+
 //------------------------------------------------------------------------------------------------
 
 
 //------------------------------------------------------------------------------------------------
 // Init global constants and variables
 //------------------------------------------------------------------------------------------------
-const apiRoot = process.env.NEXT_PUBLIC_SCAN_API_PROXY_ROOT;
+const apiRoot = publicRuntimeConfig.NEXT_PUBLIC_SCAN_API_PROXY_ROOT;
 const fetcher = (url) => fetch(url).then((r) => r.text());
 
 //------------------------------------------------------------------------------------------------
