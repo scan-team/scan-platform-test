@@ -23,6 +23,9 @@ set -euxo pipefail
 export USERID=$(id -u)
 export GROUPID=$(id -g)
 
+chmod a+w scan-reverse-proxy/log
+chmod a+w scan_data_observer/data
+chmod a+w scan_data_observer/logs
 
 if test -f "build.sh"; then
     ./build.sh
