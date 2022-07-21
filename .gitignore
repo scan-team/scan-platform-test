@@ -173,3 +173,5 @@ cython_debug/
 # for docker-compose.yml for local modification
 docker-compose.yml
 docker-compose-dev.yml
+
+scan_product_ready_files.tgz
