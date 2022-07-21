@@ -27,6 +27,8 @@ from sqlalchemy import orm
 from sqlalchemy.engine import create_engine
 from dotenv import load_dotenv
 
+sys.path += [os.path.dirname(os.path.dirname(__file__))]
+
 from grrm.models import Eq, EQStructures
 from grrm.utils import get_structure
 
@@ -37,8 +39,6 @@ from grrm.utils import get_structure
 # Global constants and variables + Initiations
 # -------------------------------------------------------------------------------------------------
 load_dotenv()
-
-sys.path += [os.path.dirname(os.path.dirname(__file__))]
 
 # -------------------------------------------------------------------------------------------------
 

@@ -27,14 +27,17 @@ import useSWR from 'swr';
 import Layout from '../../../components/wide-layout';
 import { GraphViewer } from '../../../components/graph-viewer';
 
+import getConfig from "next/config"
+const { publicRuntimeConfig } = getConfig()
+
 //------------------------------------------------------------------------------------------------
 
 
 //------------------------------------------------------------------------------------------------
 // Initiation of global values
 //------------------------------------------------------------------------------------------------
-const apiProxyRoot = process.env.NEXT_PUBLIC_SCAN_API_PROXY_ROOT;
-const apiRoot = process.env.SCAN_API_ROOT;
+const apiProxyRoot = publicRuntimeConfig.NEXT_PUBLIC_SCAN_API_PROXY_ROOT;
+const apiRoot = publicRuntimeConfig.SCAN_API_ROOT;
 const fetcher = (url) => fetch(url).then((r) => r.text());
 
 //------------------------------------------------------------------------------------------------

@@ -20,6 +20,9 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { withApiAuthRequired, getSession } from '@auth0/nextjs-auth0';
 import httpProxyMiddleware from 'next-http-proxy-middleware';
 
+import getConfig from 'next/config';
+const { publicRuntimeConfig } = getConfig()
+
 //------------------------------------------------------------------------------------------------
 
 
@@ -42,7 +45,7 @@ export default withApiAuthRequired(
     const session = await getSession(req, res);
 
     return httpProxyMiddleware(req, res, {
-      target: process.env.SCAN_API_ROOT,
+      target: publicRuntimeConfig.SCAN_API_ROOT,
       pathRewrite: [
         {
           patternStr: '^/api/proxy',

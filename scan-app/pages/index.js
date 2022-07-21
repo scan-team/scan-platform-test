@@ -22,6 +22,8 @@ import styles from '../styles/Home.module.css';
 
 import Layout from '../components/layout';
 
+import getConfig from 'next/config';
+
 //------------------------------------------------------------------------------------------------
 
 
@@ -29,7 +31,8 @@ import Layout from '../components/layout';
 // get Server-Side Properties
 //------------------------------------------------------------------------------------------------
 export const getServerSideProps = async (context) => {
-  const apiRoot = process.env.SCAN_API_ROOT;
+  const { publicRuntimeConfig } = getConfig()
+  const apiRoot = publicRuntimeConfig.SCAN_API_ROOT;
   const url = encodeURI(`${apiRoot}/stats`);
 
   const response = await fetch(url);

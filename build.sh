@@ -14,6 +14,7 @@ do
   shift
 done
 
+. .env
 
 echo ====================
 echo buiding scan_api_internal-dev

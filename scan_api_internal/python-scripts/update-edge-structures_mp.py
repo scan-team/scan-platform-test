@@ -30,9 +30,12 @@ from sqlalchemy import orm
 from sqlalchemy.engine import create_engine
 import argparse
 
+from dotenv import load_dotenv
+
+sys.path += [os.path.dirname(os.path.dirname(__file__))]
+
 from grrm.models import Edge, EdgeStructures
 from grrm.utils import get_structure
-from dotenv import load_dotenv
 
 # -------------------------------------------------------------------------------------------------
 
@@ -40,8 +43,6 @@ from dotenv import load_dotenv
 # -------------------------------------------------------------------------------------------------
 # Global constants and variables + Initiations
 # -------------------------------------------------------------------------------------------------
-sys.path += [os.path.dirname(os.path.dirname(__file__))]
-
 load_dotenv()
 
 # -------------------------------------------------------------------------------------------------

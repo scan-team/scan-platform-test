@@ -35,13 +35,16 @@ import Modal from '@material-ui/core/Modal';
 
 import styles from './graph-viewer.module.css';
 
+import getConfig from "next/config"
+const { publicRuntimeConfig } = getConfig()
+
 //----------------------------------------------
 
 
 //------------------------------------------------------------------------------------------------
 // Init global constants and variables
 //------------------------------------------------------------------------------------------------
-const apiRoot = process.env.NEXT_PUBLIC_SCAN_API_PROXY_ROOT;
+const apiRoot = publicRuntimeConfig.NEXT_PUBLIC_SCAN_API_PROXY_ROOT;
 
 const options = [
   { key: 'energy', text: 'energy' },
