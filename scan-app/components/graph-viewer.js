@@ -31,12 +31,6 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Modal from '@material-ui/core/Modal';
 
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
-
 import styles from './graph-viewer.module.css';
 
 import getConfig from "next/config"
@@ -59,7 +53,7 @@ const options = [
   { key: 'reactionyield', text: 'Reaction Yield' },
 ];
 
-const paletteColdHot = ['#6ba6f6', '#00c1ff', '#00d6ef', '#00e6c5', '#79f090', '#a6e566', '#ced742', '#f4c52c', '#f2a403', '#ee8100', '#e85a00', '#de2608'];
+// const paletteColdHot = ['#6ba6f6', '#00c1ff', '#00d6ef', '#00e6c5', '#79f090', '#a6e566', '#ced742', '#f4c52c', '#f2a403', '#ee8100', '#e85a00', '#de2608'];
 
 const stylePack = {
   // backgroundColor: '#f7f5b7', //light yellowish
