@@ -157,6 +157,14 @@ export default function MapInfo({ mapData, id }) {
 
       {user && (
         <div>
+          <div className="flex items-center justify-center m-3">
+            <div className="m-3">
+              <Link href={`/maps/${id}/graph`}>
+                <a>Go to GraphViewer</a>
+              </Link>
+            </div>
+          </div>
+
           <div className="min-h-screen flex items-center justify-center px-4">
             <div className="max-w-4xl  bg-white w-full rounded-lg shadow-xl">
               <div className="p-4 border-b">
