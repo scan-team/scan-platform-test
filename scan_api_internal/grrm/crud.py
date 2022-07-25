@@ -379,6 +379,7 @@ class Database:
         """
         Get Shortest Path
         :param db: SQLAlchemy Session
+        :param map_id: scan db map id
         :param start_Node_id: scan db graph start node id
         :param end_Node_id: scan db graph end node id
         :return: List of Node IDs (including start and end)
@@ -401,4 +402,34 @@ class Database:
             print("An exception occurred, probably because one of the nodes are not connected to anything", flush=True)
                         
         return shortest_path_nodes
+
+    
+    @staticmethod
+    def get_eqs_ry(
+        db: Session,
+        map_id: str,
+    ):
+        """
+        Get Eqs Reaction Yields
+        :param db: SQLAlchemy Session
+        :param map_id: scan db map id
+        :return: Eqs ReactYields array list
+        """
+
+        id = ulid.parse(map_id)
+        map = db.query(models.GRRMMap).filter(models.GRRMMap.id == id).first()
+        q = db.query(models.Eq).filter(models.Eq.map == map)
+        result = []
+        
+        for row in q.all():
+            d = {}
+            for column in row.__table__.columns:
+                if column.name == "id": 
+                    d[column.name] = (ulid.parse(getattr(row, column.name))).str
+                elif column.name == "reactionyield": 
+                    d[column.name] = getattr(row, column.name)
+
+            result.append(d)
+        
+        return result
 # -------------------------------------------------------------------------------------------------
