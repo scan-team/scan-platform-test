@@ -774,19 +774,19 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
             <div>              
               <label style={{marginTop: "5px"}}>
                 <input type="radio" name="reyitemp" style={{height: '15px', width: '15px', marginRight: "3px"}} value="200" onChange={ryTempChange} checked={ryTemp == '200'} /> 
-                200°
+                200K
               </label>
             </div>
             <div >              
               <label>
                 <input type="radio" name="reyitemp" style={{height: '15px', width: '15px', marginRight: "3px"}} value="300" onChange={ryTempChange}  checked={ryTemp == '300'} />
-                300°
+                300K
               </label>
             </div>
             <div >              
               <label>
                 <input type="radio" name="reyitemp" style={{height: '15px', width: '15px', marginRight: "3px"}} value="400" onChange={ryTempChange}  checked={ryTemp == '400'} />
-                400°
+                400K
               </label>
             </div>
           </div>
