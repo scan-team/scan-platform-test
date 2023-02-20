@@ -80,4 +80,4 @@ To import it, you may
 
 ## LICENSE
 
-MIT
+GPL 3.0
