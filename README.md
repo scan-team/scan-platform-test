@@ -80,4 +80,4 @@ To import it, you may
 
 ## LICENSE
 
-[GPL 3.0](LICENSE.txt)
+[GPL 3.0](https://github.com/scan-team/scan-platform-test/blob/main/LICENCE)
