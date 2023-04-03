@@ -80,4 +80,4 @@ To import it, you may
 
 ## LICENSE
 
-MIT
+[GPL 3.0](https://github.com/scan-team/scan-platform-test/blob/main/LICENCE)
