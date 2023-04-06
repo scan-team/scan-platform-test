@@ -105,6 +105,9 @@ export default function Home({ stats }) {
             <div>
               <Link href="/terms">Terms of Use</Link>
             </div>
+            <div>
+              <a target="_blank" href="mailto:scan-team@sci.hokudai.ac.jp">Contact Us</a>
+            </div>
             <div>© 2021 SCAN developers</div>
           </div>
         </footer>
