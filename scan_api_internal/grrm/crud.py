@@ -100,6 +100,7 @@ class Database:
         before=None,
         after=None,
         sort="updated_at",
+        access_level=10303
     ):
         """
         Get accessible maps
@@ -114,6 +115,11 @@ class Database:
         # only access the public maps
         q = db.query(models.GRRMMap).filter(models.GRRMMap.accessibility == 0)
 
+        # filter access level
+        user_access_level = access_level%100
+        user_quarity_level = int(access_level/100)%100
+        q = q.filter(models.GRRMMap.user_access_level <= user_access_level).filter(models.GRRMMap.user_quarity_level <= user_quarity_level)
+        
         if len(atoms) > 0:
             atoms_str = str(atoms).replace("'", '"')
             q = q.filter(func.json_contains(models.GRRMMap.atom_name, f"{atoms_str}"))
@@ -140,6 +146,7 @@ class Database:
         db: Session,
         smiles="",
         sort="updated_at",
+        access_level=10303
     ):
         """
         Get Maps
@@ -151,7 +158,7 @@ class Database:
         :return: Maps
         """
 
-        accessible_maps = Database.get_accessible_maps(db)
+        accessible_maps = Database.get_accessible_maps(db,access_level=access_level)
         
         q = db.query(models.EQStructures.map_id).filter(models.EQStructures.map_id.in_(m.id for m in accessible_maps.all()))
         q = q.filter(

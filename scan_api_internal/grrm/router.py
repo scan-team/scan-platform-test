@@ -129,6 +129,7 @@ async def get_maps(
     sort: Optional[str] = None,
     smiles: Optional[str] = None,
     db: Session = Depends(session),
+    level:Optional[int] = None
 ):
     """
     Maps
@@ -138,9 +139,9 @@ async def get_maps(
     :rtype: JSON or CSV
     :exception: HTTPException(404)
     """
-
+    
     if smiles:
-        maps = Database.get_maps_with_smiles(db, smiles, sort)
+        maps = Database.get_maps_with_smiles(db, smiles, sort,access_level=level)
         if maps:
             return sql_paginate(maps)
 
@@ -148,7 +149,7 @@ async def get_maps(
     if atoms:
         in_atoms = list(set(atoms.split(",")))
 
-    maps = Database.get_accessible_maps(db, in_atoms, before, after, sort)
+    maps = Database.get_accessible_maps(db, in_atoms, before, after, sort,access_level=level)
 
     if maps:
         return sql_paginate(maps)

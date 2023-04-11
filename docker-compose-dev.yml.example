@@ -68,6 +68,7 @@ services:
       - '127.0.0.1:${API_PORT}:8000'
     volumes:
       - ./scan_api_internal/app.py:/var/app/scan_api_internal/app.py
+      - ./scan_api_internal/grant.py:/var/app/scan_api_internal/grant.py
       - ./scan_api_internal/service:/var/app/scan_api_internal/service
       - ./scan_api_internal/scan_analytics:/var/app/scan_api_internal/scan_analytics
       - ./scan_api_internal/grrm:/var/app/scan_api_internal/grrm
@@ -120,13 +121,26 @@ services:
       - ./scan-reverse-proxy/root:/usr/local/nginx/html
       - ./scan-reverse-proxy/conf.d:/etc/nginx/conf.d
       - ./scan-reverse-proxy/log:/var/log/nginx/
-      - /etc/ssl/certs:/etc/ssl/certs # Here is the local SSL Certs path
+      - ../cert/:/etc/ssl/certs # Here is the local SSL Certs path
     depends_on:
       app:
         condition: service_started
     networks:
       - scan-network
-  
+
+  observer:
+    build:
+      context: ./scan_data_observer
+      dockerfile: ./Dockerfile
+    container_name: observer
+    env_file: .env
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./scan_data_observer/data/:/data
+      - ./scan_data_observer/logs/:/logs
+    networks:
+      - scan-network
+
 networks:
   scan-network:
     name: scan-network

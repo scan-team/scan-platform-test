@@ -19,7 +19,7 @@
 //------------------------------------------------------------------------------------------------
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0';
+import { useUser, withPageAuthRequired,getSession } from '@auth0/nextjs-auth0';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
@@ -63,6 +63,9 @@ const loadingContext = React.createContext(false);
 //------------------------------------------------------------------------------------------------
 export const getServerSideProps = withPageAuthRequired({
   async getServerSideProps(context) {
+
+    const {user} = await getSession(context.req, context.res) 
+
     const apiRoot = publicRuntimeConfig.SCAN_API_ROOT;
     const q = context.query.q;
 
@@ -75,14 +78,14 @@ export const getServerSideProps = withPageAuthRequired({
 
       if (searchTarget === 'atoms') {
         const url = encodeURI(
-          `${apiRoot}/maps?size=10&atoms=${q}&sort=${o}${sort}&page=${page}`
+          `${apiRoot}/maps?size=10&atoms=${q}&sort=${o}${sort}&page=${page}&level=${user.access_level}`
         );
 
         response = await fetch(url);
       } else if (searchTarget === 'smiles') {
         const url = `${apiRoot}/maps?size=10&smiles=${encodeURIComponent(
           q.toString()
-        )}&page=${page}`;
+        )}&page=${page}&level=${user.access_level}`;
 
         response = await fetch(url);
       }

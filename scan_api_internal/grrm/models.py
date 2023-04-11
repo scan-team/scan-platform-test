@@ -81,6 +81,9 @@ class GRRMMap(Base):
     created_at = Column(DateTime, server_default=current_timestamp())
     updated_at = Column(DateTime, server_default=current_timestamp())
 
+    user_access_level = Column(Integer)
+    user_quarity_level = Column(Integer)
+
 # -------------------------------------------------------------------------------------------------
 
 
