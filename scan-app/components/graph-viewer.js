@@ -46,6 +46,7 @@ const apiRoot = publicRuntimeConfig.NEXT_PUBLIC_SCAN_API_PROXY_ROOT;
 
 const options = [
   { key: 'energy', text: 'energy' },
+  { key: 'energyinverted', text: 'energy Inverted' },
   { key: 'frequency', text: 'Frequency' },
   { key: 'betweenness', text: 'Betweenness centrality' },
   { key: 'closeness', text: 'Closeness centrality' },
@@ -87,6 +88,9 @@ let spMemData = [];
 var spEdgeMem = [];
 let domLabels = {};
 let measuresMem = [];
+
+var selectedNodes = [];
+var hideEdgeRequestList = [];
 //------------------------------------------------------------------------------------------------
 
 
@@ -416,10 +420,12 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
   const [targetNode, setTargetNode] = useState({ id: null });
   const [popupOffset, setPopupOffset] = useState('100,0');
   const [tempIndex, setTempIndex] = useState(0);
-  
+
   const r = useRef();
+  const r2 = useRef();
   const g = useRef();
-  const l = useRef();
+  const l = useRef();  
+  const gs = useRef();
   
   const pinnedRef = useRef(pinned);
 
@@ -449,12 +455,23 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
     const handleMouseLeave = (node) => {      
       setOpen((prev) => false);      
     };
+
+    const resetSelection = function(){
+      for(var i = 0; i < selectedNodes.length; i++){
+        var nodeUI = gs.current.getNodeUI(selectedNodes[i]);
+        nodeUI.color = nodeUI.node.data["memory"].color;
+        nodeUI.size = nodeUI.node.data["memory"].size;
+      }
+      selectedNodes = [];
+      r2.current.rerender();
+    };
     
     const handleNodeSnglClick = (node, event) => {
       if(event.ctrlKey || event.metaKey){
         event.preventDefault();
 
         resetPathSelection(graphics, container.current);
+        resetSelection();
 
         var nodeUI = graphics.current.getNodeUI(node.id);
         var thisNode = [node.id, nodeUI.color, nodeUI.size];        
@@ -465,7 +482,23 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
         if(selectedPath.length == 2){
           getShortestPath(([mapId]).concat([selectedPath[0][0], selectedPath[1][0]]), graphics, g, container, [setModalTitle, setModalBody, setOpenModal]);
         }
-      }      
+      } 
+      else if(event.shiftKey){
+        event.preventDefault();
+        resetPathSelection(graphics, container.current);
+        resetSelection();
+        selectedNodes.push(node.id);
+        var nodeUI = gs.current.getNodeUI(node.id);        
+        for(var i = 0; i < nodeUI.node.links.length; i++){
+          var relatedNodeId = nodeUI.node.links[i].fromId != node.id ? nodeUI.node.links[i].fromId : nodeUI.node.links[i].toId
+          selectedNodes.push(relatedNodeId);
+          var relNodeUI = gs.current.getNodeUI(relatedNodeId);
+          relNodeUI.color = 0xff00ffff;
+          relNodeUI.size = 20;
+        }
+        nodeUI.color = graphStyles.selectedNodeColor
+        nodeUI.size = 20;
+      }
     };
     
     const readData = async () => {            
@@ -540,7 +573,7 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
       // ========================================================================================================================================
 
       const mValues = measures.map((m) => {
-        if (measure === 'energy') {
+        if (measure === 'energy' || measure === 'energyinverted') {          
           return m['energy'][tempIndex];
         } 
         else if (measure.indexOf("reactionyield") !== -1) {
@@ -564,15 +597,18 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
           // ========================================================================================================================================
         }
 
-        if (measure != 'energy') {
+        if (measure != 'energy' && measure != 'energyinverted') {
           if (measure.indexOf("reactionyield") !== -1) {
-            const c = d3.rgb(color(node.data[measure+ryTemp])).formatHex();            
+            var c = d3.rgb(color(node.data[measure+ryTemp])).formatHex();              
+            if(node.data[measure+'200'] <= 0.5){ node.data['isPotentiallyHidden200'] = true; }
+            if(node.data[measure+'300'] <= 0.5){ node.data['isPotentiallyHidden300'] = true; }
+            if(node.data[measure+'400'] <= 0.5){ node.data['isPotentiallyHidden400'] = true; }
+            
             //===* WHEN -->NOT<-- USING CUSTOM WEBGL *=================================================================================================
             return Viva.Graph.View.webglSquare(graphStyles.nodeDefault, c);
             //===* WHEN USING CUSTOM WEBGL *===========================================================================================================        
             // return new WebglCircle(graphStyles.nodeSelected, c);
-            // ========================================================================================================================================
-            
+            // ========================================================================================================================================            
           }
 
           if (hNodeIds.includes(node.id)) {
@@ -592,7 +628,10 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
           }
         }
 
-        if (node.data?.energy) {          
+        if (node.data?.energy) {        
+          if(measure == 'energyinverted'){
+            color = d3.scaleSequential(d3.interpolateSpectral).domain([Math.min(...mValues), Math.max(...mValues)]);
+          }
           const c = d3.rgb(color(node.data.energy[0])).formatHex();
           //===* WHEN -->NOT<-- USING CUSTOM WEBGL *=================================================================================================
           return Viva.Graph.View.webglSquare(graphStyles.nodeDefault, c);
@@ -608,10 +647,16 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
         // ========================================================================================================================================
       });
 
-      //--- IF DIFFERENT COLOR OF THE EDGES (Lines) ARE REQUESTED --------------------------------
-      // graphics.current.link((link) => {    
-      //   return Viva.Graph.View.webglLine(graphStyles.lineDefaultColor);
-      // });
+      
+      //--- IF DIFFERENT COLOR OF THE EDGES (Lines) ARE REQUESTED --------------------------------            
+      graphics.current.link((link) => {               
+        if(measure=='reactionyield'){
+          return Viva.Graph.View.webglLine(Viva.Graph.View._webglUtil.parseColor("#00000000"));
+        }
+        else{
+          return Viva.Graph.View.webglLine(graphStyles.lineDefaultColor);
+        }
+      });
       //------------------------------------------------------------------------------------------
       
 
@@ -649,15 +694,33 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
         graphics: graphics.current,
       });
       renderer.run();
+
+      // Store graphic data in the node for memory purpose
+      graph.forEachNode((n) => {
+        var nodeUI = graphics.current.getNodeUI(n.id);
+        n.data["memory"] = {size: nodeUI.size, color: nodeUI.color};
+      });
+      
       r.current = render;
+      r2.current = renderer;
       g.current = graph;
       l.current = layout;
+      gs.current = graphics.current;
       
       setIsWaitingResults(false);
       window.graph = graph;
       window.graphics = graphics.current;
       window.layout = layout;
       window.renderer = renderer;
+
+      const clearSelections = function (e) {
+        resetSelection();
+      }
+
+      const componentResetBtn = document.getElementById("resetSelectionBtn");      
+      componentResetBtn.removeEventListener("click", clearSelections);
+      componentResetBtn.addEventListener("click", clearSelections);      
+      
     };
     readData();
   }, [measure]);
@@ -673,6 +736,15 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
     resetPathSelection(graphics, container.current, true);
     setPinned(false);
     setMeasure(e.target.value);
+
+    if(e.target.value == "reactionyield"){
+      setTimeout(() => {
+        g.current.forEachLink((l) => {   
+          var linkUI = graphics.current.getLinkUI(l.id); 
+          linkUI.color = graphStyles.lineDefaultColor;
+        });   
+      }, 1000);      
+    }
   };
 
   const ryTempChange = (e) => {   
@@ -686,6 +758,34 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
       nUI.color = Viva.Graph.View._webglUtil.parseColor(d3.rgb(color(n.data[measure+newTemp])).formatHex());
     });   
     setRYTemp(newTemp); 
+  };
+
+  const hideLowYieldChange = (e) => {     
+    g.current.forEachNode((n) => {      
+      if(n.data['isPotentiallyHidden'+ryTemp]){
+        var nUI = graphics.current.getNodeUI(n.id); 
+        if (e.target.checked) {
+          nUI.color = Viva.Graph.View._webglUtil.parseColor("#00000000");
+        } else {
+          const mValues = measuresMem.map((m) => {
+            return m[measure+ryTemp];
+          });    
+          var color = d3.scaleSequential(d3.interpolateSpectral).domain([Math.max(...mValues), Math.min(...mValues)]);
+          nUI.color = Viva.Graph.View._webglUtil.parseColor(d3.rgb(color(n.data[measure+ryTemp])).formatHex());
+        } 
+        
+        if(n.links){
+          for (let i = 0; i < n.links.length; i++) {  
+            var linkUI = graphics.current.getLinkUI(n.links[i].id);
+            if (e.target.checked) {
+              linkUI.color = Viva.Graph.View._webglUtil.parseColor("#00000000");
+            } else {
+              linkUI.color = graphStyles.lineDefaultColor;
+            }             
+          }          
+        }
+      }
+    }); 
   };
   
   const onClick = (e) => {
@@ -789,7 +889,15 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
                 400K
               </label>
             </div>
-          </div>
+          </div>          
+        )}
+        {measure=='reactionyield' && (
+          <div style={{display: 'inline-block', marginLeft: "10px", fontSize: "13px", marginRight: "15px"}}>
+              <label style={{marginTop: "5px"}}>
+                <input type="checkbox" name="hidelowyield" style={{height: '15px', width: '15px', marginRight: "3px"}} onChange={hideLowYieldChange} /> 
+                Hide Low Yield Nodes
+              </label>
+          </div>          
         )}
         <input
           style={{
@@ -812,7 +920,7 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
             color: "black",
           }}
         >
-          Hold CTRL (or ⌘ on Mac) + mouse-click for Node selection (Shortest Path Calculation)
+          Hold CTRL (or ⌘ on Mac) + mouse-click for Node selection (Shortest Path Calculation) / Hold SHIFT for just highlighting single node and its neighbours
         </span>
         
         <input
@@ -826,6 +934,7 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
             cursor: "pointer"
           }}
           type="button"
+          id="resetSelectionBtn"
           onClick={onResetRequestClick}
           value={'RESET SELECTION'}
           size="sm"

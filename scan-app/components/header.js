@@ -35,6 +35,8 @@ const Header = () => {
 
   return (
     <header>
+      <hr style={{borderTop: '1px solid #069A3D', marginTop: '1px'}} />
+      <hr style={{borderTop: '1px solid #069A3D', marginTop: '2px', marginBottom: '1px'}} />
       <nav>
         <ul>
           <li>            
@@ -51,6 +53,11 @@ const Header = () => {
           <li style={{paddingTop: '1rem'}}>
             <Link href="/map-search">
               <a>Map Search</a>
+            </Link>
+          </li>
+          <li style={{paddingTop: '1rem', paddingRight: '1rem', paddingLeft: '1rem'}}>
+            <Link href="/links">
+              <a>Useful Links</a>
             </Link>
           </li>
           {user ? (
@@ -92,7 +99,7 @@ const Header = () => {
         li {
           margin-right: 1rem;
         }
-        li:nth-child(2) {
+        li:nth-child(3) {
           margin-right: auto;
         }
         a {
@@ -100,7 +107,9 @@ const Header = () => {
           text-decoration: none;
         }
       `}</style>
-    </header>
+      <hr style={{borderTop: '1px solid #069A3D', marginTop: '1px', marginBottom: '1px'}} />
+      <hr style={{borderTop: '1px solid #069A3D', marginTop: '1px', marginBottom: '1px'}} />
+    </header>    
   );
 };
 //------------------------------------------------------------------------------------------------

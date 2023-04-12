@@ -91,7 +91,7 @@ export default function Home({ stats }) {
             </button>
           </Link>
 
-          <h4>Available Amazing Resources:</h4>
+          <h4>Available Resources:</h4>
 
           <ul>
             <li>{stats.maps} maps</li>
@@ -104,6 +104,9 @@ export default function Home({ stats }) {
           <div>
             <div>
               <Link href="/terms">Terms of Use</Link>
+            </div>
+            <div>
+              <a target="_blank" href="mailto:scan-team@sci.hokudai.ac.jp">Contact Us</a>
             </div>
             <div>© 2021 SCAN developers</div>
           </div>
