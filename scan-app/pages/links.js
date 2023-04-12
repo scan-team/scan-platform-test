@@ -62,8 +62,8 @@ export default function Home({}) {
 
         <div className={styles.linklist}>
             <ul>                
-                <li><a href='/docs/SCAN-User-Manual-Eng.pdf' target='_blank'>SCAN User Manual (pdf) [ENGLISH]</a></li>
-                <li><a href='/docs/SCAN-User-Manual-Jp.pdf' target='_blank'>SCAN User Manual (pdf) [日本語]</a></li>
+                {/* <li><a href='/docs/SCAN-User-Manual-Eng.pdf' target='_blank'>SCAN User Manual (pdf) [ENGLISH]</a></li> */}
+                {/* <li><a href='/docs/SCAN-User-Manual-Jp.pdf' target='_blank'>SCAN User Manual (pdf) [日本語]</a></li> */}
                 {/* <li><a href='/docs/scan_server_manual.pdf' target='_blank'>SCAN Server Setup and Maintanance Manual (pdf)</a></li> */}
                 <li><a href='https://onlinelibrary.wiley.com/doi/10.1002/tcr.201600043' target='_blank'>AFIR Chemistry reaction Data (currently used in SCAN)</a></li>                
                 <li><a href='https://takahashigroup.github.io' target='_blank'>SCAN Software Development Group</a></li>
