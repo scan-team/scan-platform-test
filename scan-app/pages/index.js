@@ -91,7 +91,7 @@ export default function Home({ stats }) {
             </button>
           </Link>
 
-          <h4>Available Amazing Resources:</h4>
+          <h4>Available Resources:</h4>
 
           <ul>
             <li>{stats.maps} maps</li>
