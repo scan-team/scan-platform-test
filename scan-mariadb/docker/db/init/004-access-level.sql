@@ -1,0 +1,1 @@
+ALTER TABLE `maps` ADD `user_access_level` INT(10) NOT NULL DEFAULT '0' AFTER `accessibility`, ADD `user_quarity_level` INT(10) NOT NULL DEFAULT '0' AFTER `user_access_level`;
