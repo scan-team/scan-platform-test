@@ -28,6 +28,15 @@ This is a monorepo for SCAN Platform. It consists of three main components:
 * scan-reverse-proxy (nginx)
   * Reverse proxy
 
+# Full Documentation
+
+Below in this ReadMe you find the basics of what is required and how to do it, but if you want a more extensive and detailed instructions for how to setup and configure a SCAN server or how to use it when it is up and running, then the two links just below, will be your friend in the night.
+
+### SCAN Server Setup Manual
+* [SCAN Server Setup Manual](https://github.com/scan-team/scan-platform-test/blob/main/scan-app/public/docs/SCAN-Server-Manual-Eng.pdf)
+### SCAN User Manual
+* [SCAN User Manual](https://github.com/scan-team/scan-platform-test/blob/main/scan-app/public/docs/SCAN-User-Manual-Eng.pdf)
+
 # git clone submodules
 
 ```
