@@ -1,9 +1,10 @@
 //================================================================================================
 // Project: SCAN - Searching Chemical Actions and Networks
-//                 Hokkaido University (2021)
+//          Hokkaido University (2021)
+//          Last Update: Q2 2023
 //________________________________________________________________________________________________
-// Authors: Jun Fujima (Former Lead Developer) [2021]
-//          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+// Authors: Mikael Nicander Kuwahara (Lead Developer) [2022-]
+//          Jun Fujima (Former Lead Developer) [2021]
 //________________________________________________________________________________________________
 // Description: This is the terms of use display page file for the scan-app website (using Next).
 //------------------------------------------------------------------------------------------------
@@ -62,10 +63,12 @@ export default function Home({}) {
 
         <div className={styles.linklist}>
             <ul>                
-                {/* <li><a href='/docs/SCAN-User-Manual-Eng.pdf' target='_blank'>SCAN User Manual (pdf) [ENGLISH]</a></li> */}
-                {/* <li><a href='/docs/SCAN-User-Manual-Jp.pdf' target='_blank'>SCAN User Manual (pdf) [日本語]</a></li> */}
-                {/* <li><a href='/docs/scan_server_manual.pdf' target='_blank'>SCAN Server Setup and Maintanance Manual (pdf)</a></li> */}
+                <li><a href='/docs/SCAN-User-Manual-Eng.pdf' target='_blank'>SCAN User Manual (pdf) [ENGLISH]</a></li>
+                <li><a href='/docs/SCAN-User-Manual-Jp.pdf' target='_blank'>SCAN User Manual (pdf) [日本語]</a></li>
+                <li><a href='/docs/SCAN-Server-Manual-Eng.pdf' target='_blank'>SCAN Server Setup and Maintanance Manual (pdf) [ENGLISH]</a></li>
+                <li><a href='/docs/SCAN-Server-Manual-Jp.pdf' target='_blank'>SCAN Server Setup and Maintanance Manual (pdf) [日本語]</a></li>
                 <li><a href='https://onlinelibrary.wiley.com/doi/10.1002/tcr.201600043' target='_blank'>AFIR Chemistry reaction Data (currently used in SCAN)</a></li>                
+                <li><a href='https://wwwchem.sci.hokudai.ac.jp/~theochem/member.html?20220622-1200' target='_blank'>The AFIR Data Team (For any data related questions) </a></li>                                
                 <li><a href='https://takahashigroup.github.io' target='_blank'>SCAN Software Development Group</a></li>
                 <li><a href='https://www.jst.go.jp/erato/en/about/index.html' target='_blank'>Erato Project, JST, Funding Agency</a></li>                
             </ul>

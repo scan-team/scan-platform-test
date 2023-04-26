@@ -1,11 +1,12 @@
 /*================================================================================================
 // Project: SCAN - Searching Chemical Actions and Networks
-//                 Hokkaido University (2021)
+//          Hokkaido University (2021)
+//          Last Update: Q2 2023
 //________________________________________________________________________________________________
-// Authors: Jun Fujima (Former Lead Developer) [2021]
-//          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+// Authors: Mikael Nicander Kuwahara (Lead Developer) [2022-]
+//          Jun Fujima (Former Lead Developer) [2021]
 //________________________________________________________________________________________________
-// Description: This is a CSS style module for the graph-viewer component (in date.js)
+// Description: This is a CSS style module for the graph-viewer component
 //------------------------------------------------------------------------------------------------
 // Notes: 
 //------------------------------------------------------------------------------------------------
@@ -15,7 +16,7 @@
 
 .nodeLabel {
     position: absolute;
-    color: rgb(253, 248, 221);
+    color: rgb(253, 221, 225);
     font-size: 0.8em;
     font-weight: bold;
     text-shadow: 1px 1px black;

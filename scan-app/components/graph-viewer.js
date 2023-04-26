@@ -1,12 +1,13 @@
 //================================================================================================
 // Project: SCAN - Searching Chemical Actions and Networks
-//                 Hokkaido University (2021)
+//          Hokkaido University (2021)
+//          Last Update: Q2 2023
 //________________________________________________________________________________________________
-// Authors: Jun Fujima (Former Lead Developer) [2021]
-//          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+// Authors: Mikael Nicander Kuwahara (Lead Developer) [2022-]
+//          Jun Fujima (Former Lead Developer) [2021]
 //________________________________________________________________________________________________
 // Description: This is a Graph-Viewer Display Component that takes data map input (from the DB) 
-//              and returns a html block using the Viva-graph library to display a interactive 
+//              and returns a html block using the Viva-graph library to display an interactive 
 //              node graph as requested. [Next.js React.js]
 //------------------------------------------------------------------------------------------------
 // Notes: 

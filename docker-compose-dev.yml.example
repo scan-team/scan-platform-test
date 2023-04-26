@@ -1,14 +1,15 @@
 # =================================================================================================
 # Project: SCAN - Searching Chemical Actions and Networks
 #          Hokkaido University (2021)
+#          Last Update: Q2 2023
 # ________________________________________________________________________________________________
-# Authors: Jun Fujima (Former Lead Developer) [2021]
-#          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
-#          NorthGrid (and associates)
+# Authors: Mikael Nicander Kuwahara (Lead Developer) [2022-]
+#          Jun Fujima (Former Lead Developer) [2021]
+#          NorthGrid (Support Dev)
 # ________________________________________________________________________________________________
-# Description: This is the docker-compose file for the entire SCAN project used during development
-#              that defines all services and more that is required in order to run the app, 
-#              but also updates the website in realtime and speed up all coding.
+# Description: This is the docker-compose file template for the entire SCAN project used during 
+#              development that defines all services and more that is required in order to run the 
+#              app, but also updates the website in realtime and speed up all coding.
 # ------------------------------------------------------------------------------------------------
 # Notes: 
 # ------------------------------------------------------------------------------------------------

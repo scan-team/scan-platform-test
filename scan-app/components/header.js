@@ -1,9 +1,10 @@
 //================================================================================================
 // Project: SCAN - Searching Chemical Actions and Networks
-//                 Hokkaido University (2021)
+//          Hokkaido University (2021)
+//          Last Update: Q2 2023
 //________________________________________________________________________________________________
-// Authors: Jun Fujima (Former Lead Developer) [2021]
-//          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+// Authors: Mikael Nicander Kuwahara (Lead Developer) [2022-]
+//          Jun Fujima (Former Lead Developer) [2021]
 //________________________________________________________________________________________________
 // Description: This is a Top level Head and Menu Display Component that is basically visible on 
 //              all pages and let you navigate to the different main pages of SCAN. 

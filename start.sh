@@ -3,11 +3,12 @@
 # =================================================================================================
 # Project: SCAN - Searching Chemical Actions and Networks
 #          Hokkaido University (2021)
+#          Last Update: Q2 2023
 # ________________________________________________________________________________________________
-# Authors: Jun Fujima (Former Lead Developer) [2021]
-#          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+# Authors: Mikael Nicander Kuwahara (Lead Developer) [2022-]
+#          Jun Fujima (Former Lead Developer) [2021]
 # ________________________________________________________________________________________________
-# Description: This is the start.sh bash file that starts the running docker-compose for the total 
+# Description: This is the file that starts the running docker-compose for the total 
 #              project in a proper and safe manner.
 # ------------------------------------------------------------------------------------------------
 # Notes: 
@@ -23,10 +24,12 @@ set -euxo pipefail
 export USERID=$(id -u)
 export GROUPID=$(id -g)
 
+# Make sure all writing rights are proper
 chmod a+w scan-reverse-proxy/log
 chmod a+w scan_data_observer/data
 chmod a+w scan_data_observer/logs
 
+# Make sure to pre-build the docker containers with build.sh if it exists
 if test -f "build.sh"; then
     ./build.sh
 fi

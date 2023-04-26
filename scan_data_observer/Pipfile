@@ -1,3 +1,21 @@
+# =================================================================================================
+# Project: SCAN - Searching Chemical Actions and Networks
+#          Hokkaido University (2021)
+#          Last Update: Q2 2023
+# ________________________________________________________________________________________________
+# Authors: NorthGrid (Support Dev)
+#          Mikael Nicander Kuwahara (Lead Developer) [2022-]
+#          Jun Fujima (Former Lead Developer) [2021]
+# ________________________________________________________________________________________________
+# Description: This is the Pip-environment file for the scan-data-observer part of the 
+#              SCAN Project.
+#              This is a dependency and package manager for python.
+# ------------------------------------------------------------------------------------------------
+# Notes: This was part of the NorthGrid Support in 2022 
+# ------------------------------------------------------------------------------------------------
+# References: 
+# =================================================================================================
+
 [[source]]
 url = "https://pypi.org/simple"
 verify_ssl = true

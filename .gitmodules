@@ -1,3 +1,21 @@
+# =================================================================================================
+# Project: SCAN - Searching Chemical Actions and Networks
+#          Hokkaido University (2021)
+#          Last Update: Q2 2023
+# ________________________________________________________________________________________________
+# Authors: Mikael Nicander Kuwahara (Lead Developer) [2022-]
+#          Jun Fujima (Former Lead Developer) [2021]
+#          NorthGrid (Support Dev)
+# ________________________________________________________________________________________________
+# Description: This is the file that connects the data importer module with the SCAN main app 
+#			   module, as they are located in GitHub.
+# ------------------------------------------------------------------------------------------------
+# Notes: 
+# ------------------------------------------------------------------------------------------------
+# References: 
+# =================================================================================================
+
+# SCAN submodule: Data Importer
 [submodule "scan_data_observer/scan_data_importer"]
 	path = scan_data_observer/scan_data_importer
 	url = https://github.com/scan-team/scan_data_importer.git

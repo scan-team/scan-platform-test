@@ -1,3 +1,20 @@
+# =================================================================================================
+# Project: SCAN - Searching Chemical Actions and Networks
+#          Hokkaido University (2021)
+#          Last Update: Q2 2023
+# ________________________________________________________________________________________________
+# Authors: NorthGrid (Support Dev)
+#          Mikael Nicander Kuwahara (Lead Developer) [2022-]
+#          Jun Fujima (Former Lead Developer) [2021]
+# ________________________________________________________________________________________________
+# Description: This is the Developer version of the Dockerfile for the scan-api-internal part of 
+#              the SCAN Project.
+# ------------------------------------------------------------------------------------------------
+# Notes: This was part of the NorthGrid Support in 2022 
+# ------------------------------------------------------------------------------------------------
+# References: 
+# =================================================================================================
+
 FROM condaforge/miniforge3
 
 LABEL maintainer "jfujima"

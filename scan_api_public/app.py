@@ -1,9 +1,10 @@
 # =================================================================================================
 # Project: SCAN - Searching Chemical Actions and Networks
 #          Hokkaido University (2021)
+#          Last Update: Q2 2023
 # ________________________________________________________________________________________________
-# Authors: Jun Fujima (Former Lead Developer) [2021]
-#          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+# Authors: Mikael Nicander Kuwahara (Lead Developer) [2022-]
+#          Jun Fujima (Former Lead Developer) [2021]
 # ________________________________________________________________________________________________
 # Description: This is the Entry Point for the Python App GRRM Data manager for the 
 #              scan-api-public parts of the Scan Platform Project 
@@ -14,7 +15,7 @@
 #             and internal grrm support-functions router
 # =================================================================================================
 
-print("This is scan-api-public Entrance Point", flush=True) # TODO: Remove before publish
+# print("This is scan-api-public Entrance Point", flush=True) # TODO: Remove before publish
 
 # -------------------------------------------------------------------------------------------------
 # Load required libraries

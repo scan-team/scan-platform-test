@@ -3,11 +3,12 @@
 # =================================================================================================
 # Project: SCAN - Searching Chemical Actions and Networks
 #          Hokkaido University (2021)
+#          Last Update: Q2 2023
 # ________________________________________________________________________________________________
-# Authors: Jun Fujima (Former Lead Developer) [2021]
-#          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+# Authors: Mikael Nicander Kuwahara (Lead Developer) [2022-]
+#          Jun Fujima (Former Lead Developer) [2021]
 # ________________________________________________________________________________________________
-# Description: This is the stop.sh bash file that closes the running docker-compose for the 
+# Description: This is the bash file that closes the running docker-compose for the 
 #              scan-mariadb database part of the project in a proper and safe manner.
 # ------------------------------------------------------------------------------------------------
 # Notes: You only need to use this if you ever wish to run this part of SCAN on its own.

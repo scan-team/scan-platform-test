@@ -1,5 +1,23 @@
 #!/bin/bash
 
+# =================================================================================================
+# Project: SCAN - Searching Chemical Actions and Networks
+#          Hokkaido University (2021)
+#          Last Update: Q2 2023
+# ________________________________________________________________________________________________
+# Authors: Mikael Nicander Kuwahara (Lead Developer) [2022-]
+#          Jun Fujima (Former Lead Developer) [2021]
+#          NorthGrid (Support Dev)
+# ________________________________________________________________________________________________
+# Description: This is the file that builds docker containers for the dev version of the server.
+# ------------------------------------------------------------------------------------------------
+# Notes: 
+# ------------------------------------------------------------------------------------------------
+# References: 
+# =================================================================================================
+
+
+# Prepare the build
 while (( $# > 0 ))
 do
   case $1 in
@@ -9,6 +27,7 @@ do
   shift
 done
 
+# Build the dev, auto-update, docker container versions for the SCAN dev environment
 docker build $NO_CACHE_OPTION ./scan-mariadb/docker/db -t scan-mariadb
 docker build $NO_CACHE_OPTION ./scan_api_internal -t scan_api_internal-dev -f ./scan_api_internal/Dockerfile-dev
 docker build $NO_CACHE_OPTION ./scan_api_public -t scan_api_public-dev -f ./scan_api_public/Dockerfile-dev

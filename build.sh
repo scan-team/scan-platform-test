@@ -1,5 +1,23 @@
 #!/bin/bash
 
+# =================================================================================================
+# Project: SCAN - Searching Chemical Actions and Networks
+#          Hokkaido University (2021)
+#          Last Update: Q2 2023
+# ________________________________________________________________________________________________
+# Authors: Mikael Nicander Kuwahara (Lead Developer) [2022-]
+#          Jun Fujima (Former Lead Developer) [2021]
+#          NorthGrid (Support Dev)
+# ________________________________________________________________________________________________
+# Description: This is the file that builds docker containers for the total project.
+# ------------------------------------------------------------------------------------------------
+# Notes: 
+# ------------------------------------------------------------------------------------------------
+# References: 
+# =================================================================================================
+
+
+# Prepare the build
 while (( $# > 0 ))
 do
   case $1 in
@@ -16,6 +34,7 @@ done
 
 . .env
 
+# Do the build and keep the building information flowing
 echo ====================
 echo buiding scan_api_internal-dev
 time docker build $NO_CACHE_OPTION_FORCE ./scan_api_internal -t scan_api_internal-dev -f ./scan_api_internal/Dockerfile-dev

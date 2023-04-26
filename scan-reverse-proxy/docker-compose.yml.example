@@ -1,3 +1,19 @@
+# =================================================================================================
+# Project: SCAN - Searching Chemical Actions and Networks
+#          Hokkaido University (2021)
+#          Last Update: Q2 2023
+# ________________________________________________________________________________________________
+# Authors: Mikael Nicander Kuwahara (Lead Developer) [2022-]
+#          Jun Fujima (Former Lead Developer) [2021]
+#          NorthGrid (Support Dev)
+# ________________________________________________________________________________________________
+# Description: This file is supposed to be the docker-compose template file for nginx section 
+#              folder when running independantly.
+# ------------------------------------------------------------------------------------------------
+# Notes: NOT ACTIVE - This file is overridden by the root file with the same name
+# ------------------------------------------------------------------------------------------------
+# References: 
+# =================================================================================================
 version: '3.5'
 
 
