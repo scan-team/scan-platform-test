@@ -3,12 +3,13 @@
 # =================================================================================================
 # Project: SCAN - Searching Chemical Actions and Networks
 #          Hokkaido University (2021)
+#          Last Update: Q2 2023
 # ________________________________________________________________________________________________
-# Authors: Jun Fujima (Former Lead Developer) [2021]
-#          Mikael Nicander Kuwahara (Current Lead Developer) [2022-]
+# Authors: Mikael Nicander Kuwahara (Lead Developer) [2022-]
+#          Jun Fujima (Former Lead Developer) [2021]
 # ________________________________________________________________________________________________
-# Description: This is the stop.sh bash file that closes the running docker-compose for the total 
-#              project in a proper and safe manner.
+# Description: This is the file that closes the running docker-compose for the total project in a 
+#              proper and safe manner.
 # ------------------------------------------------------------------------------------------------
 # Notes: 
 # ------------------------------------------------------------------------------------------------

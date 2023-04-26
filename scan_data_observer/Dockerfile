@@ -1,3 +1,19 @@
+# =================================================================================================
+# Project: SCAN - Searching Chemical Actions and Networks
+#          Hokkaido University (2021)
+#          Last Update: Q2 2023
+# ________________________________________________________________________________________________
+# Authors: NorthGrid (Support Dev)
+#          Mikael Nicander Kuwahara (Lead Developer) [2022-]
+#          Jun Fujima (Former Lead Developer) [2021]
+# ________________________________________________________________________________________________
+# Description: This is the Dockerfile for the Scan Data Observer part of the SCAN Project.
+# ------------------------------------------------------------------------------------------------
+# Notes: This was part of the NorthGrid Support in 2022 
+# ------------------------------------------------------------------------------------------------
+# References: 
+# =================================================================================================
+
 FROM scan_data_importer
 
 RUN apt-get update && \

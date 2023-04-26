@@ -1,3 +1,25 @@
+# =================================================================================================
+# Project: SCAN - Searching Chemical Actions and Networks
+#          Hokkaido University (2021)
+#          Last Update: Q2 2023
+# ________________________________________________________________________________________________
+# Authors: NorthGrid (Support Dev)
+#          Mikael Nicander Kuwahara (Lead Developer) [2022-]
+#          Jun Fujima (Former Lead Developer) [2021]
+# ________________________________________________________________________________________________
+# Description: This is the observer.py file that runs in the background and detect if any new data 
+#              is dropped in the dedicated data folder, and if so start the process of sucking up 
+#              that data to the DB.
+# ------------------------------------------------------------------------------------------------
+# Notes: This was part of the NorthGrid Support in 2022 
+# ------------------------------------------------------------------------------------------------
+# References: 
+# =================================================================================================
+
+
+#-------------------------------------------------------------------------------------------------
+# Import required Libraries
+#-------------------------------------------------------------------------------------------------
 import os
 import sys
 import time
@@ -6,6 +28,12 @@ import subprocess
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
 
+#-------------------------------------------------------------------------------------------------
+
+
+#-------------------------------------------------------------------------------------------------
+# Called when file is completed
+#-------------------------------------------------------------------------------------------------
 def file_completed(p, msg = "waiting... ", WAIT = 10):
     before = (None, None)
     wait = WAIT
@@ -24,6 +52,12 @@ def file_completed(p, msg = "waiting... ", WAIT = 10):
 
         time.sleep(1)
 
+#-------------------------------------------------------------------------------------------------
+
+
+#-------------------------------------------------------------------------------------------------
+# The Observer start doing its job of observing the dedicated data folder zip files
+#-------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
     path = sys.argv[1] if len(sys.argv) > 1 else '.'
     def on_created(e):
@@ -46,3 +80,5 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         observer.stop()
     observer.join()
+
+#-------------------------------------------------------------------------------------------------

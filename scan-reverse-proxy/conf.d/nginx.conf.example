@@ -1,3 +1,19 @@
+# =================================================================================================
+# Project: SCAN - Searching Chemical Actions and Networks
+#          Hokkaido University (2021)
+#          Last Update: Q2 2023
+# ________________________________________________________________________________________________
+# Authors: Mikael Nicander Kuwahara (Lead Developer) [2022-]
+#          Jun Fujima (Former Lead Developer) [2021]
+# ________________________________________________________________________________________________
+# Description: This is the file that configs and manage the nginx for the project.
+# ------------------------------------------------------------------------------------------------
+# Notes: 
+# ------------------------------------------------------------------------------------------------
+# References: 
+# =================================================================================================
+
+# Logging
 log_format api '$remote_addr - $remote_user [$time_local] "$request" '
     '$status $body_bytes_sent "$http_referer" '
     '"$http_user_agent" "$host" "$http_x_api_key" "$http_x_forwarded_for"';
@@ -25,7 +41,7 @@ server {
 
     root /usr/local/nginx/html;
 
-    # server_name 68.183.177.41;
+    # server_name IP-ADDRESS; 
     server_name localhost;
     server_tokens off;
     ignore_invalid_headers off;

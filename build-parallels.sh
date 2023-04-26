@@ -1,5 +1,24 @@
 #!/bin/bash
 
+# =================================================================================================
+# Project: SCAN - Searching Chemical Actions and Networks
+#          Hokkaido University (2021)
+#          Last Update: Q2 2023
+# ________________________________________________________________________________________________
+# Authors: Mikael Nicander Kuwahara (Lead Developer) [2022-]
+#          Jun Fujima (Former Lead Developer) [2021]
+#          NorthGrid (Support Dev)
+# ________________________________________________________________________________________________
+# Description: This is the file that builds docker containers in a more one by one and controlled 
+#              form.
+# ------------------------------------------------------------------------------------------------
+# Notes: 
+# ------------------------------------------------------------------------------------------------
+# References: 
+# =================================================================================================
+
+
+# Prepare the build
 while (( $# > 0 ))
 do
   case $1 in
@@ -13,6 +32,8 @@ do
   esac
   shift
 done
+
+# Functions that build and keep the building information flowing for specific parts of the SCAN projects
 
 function build_scan_api_internal(){
   echo ====================
@@ -53,6 +74,7 @@ function build_scanapp(){
   time docker build $NO_CACHE_OPTION ./scan-app -t scan-app --build-arg NEXT_PUBLIC_SCAN_API_PROXY_ROOT=${NEXT_PUBLIC_SCAN_API_PROXY_ROOT} --build-arg NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=${NEXT_PUBLIC_GOOGLE_ANALYTICS_ID}
 }
 
+# Call the Building functions requested
 mkdir -p build-log
 build_scan_api_internal > build-log/api_internal.$$.log 2>&1  &
 build_scan_data_observer > build-log/observer.$$.log 2>&1 &
