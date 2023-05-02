@@ -14,7 +14,7 @@ ________________________________________________________________________________
  References: 
 =================================================================================================
 -->
-# SCAN Platform test
+# SCAN Platform
 
 This is a monorepo for SCAN Platform. It consists of three main components:
 
