@@ -53,6 +53,7 @@ const options = [
   { key: 'closeness', text: 'Closeness centrality' },
   { key: 'pagerank', text: 'Pagerank' },
   { key: 'reactionyield', text: 'Reaction Yield' },
+  { key: 'clustering', text: 'Clustering' },
 ];
 
 // const paletteColdHot = ['#6ba6f6', '#00c1ff', '#00d6ef', '#00e6c5', '#79f090', '#a6e566', '#ced742', '#f4c52c', '#f2a403', '#ee8100', '#e85a00', '#de2608'];
@@ -145,7 +146,7 @@ const getShortestPath = async (ctx, graphics, graph, container, sm) => {
     sm[1]("An exception occurred, probably because one of the nodes were not connected to anything");
     sm[2](true);
   }
-  else{
+  else{    
     domLabels = generateDOMLabels(        
       graph.current,
       container.current,
@@ -190,6 +191,42 @@ const getShortestPath = async (ctx, graphics, graph, container, sm) => {
   return;
 };
 //------------------------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------------------------
+// Get NetworkX Data
+// This will contact the server for getting NetworkX data
+//------------------------------------------------------------------------------------------------
+const getClustering = async (mapId, graphics, graph, container, sm) => {
+  const url = encodeURI(`${apiRoot}/clustering/${mapId}/`);
+
+  const response = await fetch(url);        
+  const spData = await response.json();
+  
+  if(spData == "FAIL"){
+    resetPathSelection(graphics, container, true);    
+    sm[0]("Invalid Nodes Selected");
+    sm[1]("An exception occurred, probably because one of the nodes were not connected to anything");
+    sm[2](true);
+  }
+  else{        
+    const cluColPal = ["#bfffff", "#0e40f3", "#386ec3", "#7ab579", "#b2f23a", "#ffd500", "#f69f08", "#ef720e", "#e84415", "#e21b1b", "#ff0000"];
+    setTimeout(() => {
+      for (let [key, value] of Object.entries(spData)) {        
+        var nUI = graphics.current.getNodeUI(key);
+        const whatColor = cluColPal[Math.round(value*10)];
+        nUI.color = Viva.Graph.View._webglUtil.parseColor(whatColor);
+        
+        if(value > 0.9){ nUI.size = 20; }
+        else{ nUI.size = 10; }
+      }
+    },4000);
+  }
+
+  return;
+};
+//------------------------------------------------------------------------------------------------
+
 
 
 //------------------------------------------------------------------------------------------------
@@ -737,6 +774,10 @@ const GraphViewerOrg = ({ graphUrl, mapId, highlightedNodes = [] }) => {
     resetPathSelection(graphics, container.current, true);
     setPinned(false);
     setMeasure(e.target.value);
+
+    if(e.target.value == "clustering"){
+      getClustering(mapId, graphics, g, container, [setModalTitle, setModalBody, setOpenModal]);                
+    }
 
     if(e.target.value == "reactionyield"){
       setTimeout(() => {

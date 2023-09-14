@@ -56,9 +56,14 @@ const Header = () => {
               <a>Map Search</a>
             </Link>
           </li>
-          <li style={{paddingTop: '1rem', paddingRight: '1rem', paddingLeft: '1rem'}}>
+          <li style={{paddingTop: '1rem', paddingLeft: '1rem'}}>
             <Link href="/links">
               <a>Useful Links</a>
+            </Link>
+          </li>          
+          <li style={{paddingTop: '1rem', paddingRight: '1rem', paddingLeft: '1rem'}}>
+            <Link href="https://iqce.jp/GRRM/index_e.shtml" passHref> 
+              <a target="_blank">GRRM</a>
             </Link>
           </li>
           {user ? (
@@ -100,7 +105,7 @@ const Header = () => {
         li {
           margin-right: 1rem;
         }
-        li:nth-child(3) {
+        li:nth-child(4) {
           margin-right: auto;
         }
         a {
