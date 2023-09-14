@@ -406,6 +406,38 @@ class Database:
 
     
     @staticmethod
+    def get_clustering(
+        db: Session,
+        map_id: str,
+    ):
+        """
+        Get NetworkX
+        :param db: SQLAlchemy Session
+        :param map_id: scan db map id        
+        :return: List of Node IDs (including start and end)
+        """
+
+        m_id = ulid.parse(map_id)
+        csv = db.query(models.MapGraph).filter(models.MapGraph.map_id == m_id).first().graph_csv
+        df = pd.read_csv(StringIO(csv), sep=",")    
+
+        df['n0'].replace('', np.nan, inplace=True)
+        df.dropna(subset=['n0'], inplace=True)
+        df['n1'].replace('', np.nan, inplace=True)
+        df.dropna(subset=['n1'], inplace=True)
+        
+        cluster_nodes = []
+        try:
+            G = nx.from_pandas_edgelist(df, source='n0', target='n1')
+            cluster_nodes = nx.clustering(G)
+            # cluster_nodes = ["Rudolf", "Torsten"]
+        except:            
+            print("An exception occurred, probably because something went wrong", flush=True)
+                                
+        return cluster_nodes
+
+    
+    @staticmethod
     def get_eqs_ry(
         db: Session,
         map_id: str,
